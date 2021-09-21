@@ -1,8 +1,7 @@
 # https://www.tutorialspoint.com/python/python_networking.htm
 import socket, pickle  # Import socket module
 
-
-class Player:
+class Client:
     def __init__(self, port):
         self.s = socket.socket()  # Create a socket object
         self.host = socket.gethostname()  # Get local machine name
@@ -15,20 +14,22 @@ class Player:
         while True:
             serverMessage = self.s.recv(1024).decode("utf-8")
             if serverMessage:
-                print(serverMessage)
                 if serverMessage == 'nameRequest':
                     print('Hi! What is your name?')
-                    name = input('Type your name here: ')
-                    self.sendMessage('name', name)
-                    print('Hi,', name + '!')
+                    self.sendMessage(serverMessage, 'Type your name here')
+                elif serverMessage == 'startGameRequest':
+                    print('Enough players to start the game.')
+                    self.sendMessage(serverMessage, 'Type "True" to start the game')
+                else:
+                    print(serverMessage)
 
-    def sendMessage(self, key: str, message: str):
+    def sendMessage(self, key: str, UIMessage: str):
+        message = input(UIMessage + ': ')
         package = {key: message.encode()}
         self.s.send(pickle.dumps(package))
 
     def kill(self):
         self.s.close()
 
-
-client = Player(1024)
+client = Client(1024)
 client.listen()
