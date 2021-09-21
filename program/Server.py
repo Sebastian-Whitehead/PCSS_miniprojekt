@@ -1,22 +1,15 @@
 # https://www.tutorialspoint.com/python/python_networking.htm
-import socket, pickle  # Import socket module
-import MemeImage
-
-# Class for handling the player on the server
-class Player:
-    def __init__(self):
-        self.name = False # This is only to enable the class
-
-    def setName(self, name: str):
-        self.name = name
+import socket, pickle
+from MemeImage import MemeImage
+from Player import Player
 
 class Server:
     def __init__(self, port):
         self.status = 'booting'
-        self.minPlayers = 1                 # Minimum players on the server before the game can start
-        self.gameHost = False               # The game host
-        self.players = []                   # All players that are currently on the server (Keeps on disconnect)
-        # self.memeImage = MemeImage()      # Meme image (Not implemented)
+        self.minPlayers = 1          # Minimum players on the server before the game can start
+        self.gameHost = False        # The game host
+        self.players = []            # All players that are currently on the server (Keeps on disconnect)
+        self.memeImage = MemeImage() # Meme image (Not implemented)
 
         self.s = socket.socket()
         self.host = socket.gethostname()
@@ -60,7 +53,7 @@ class Server:
             self.setGameHost(newPlayer)
             print('Host:', newPlayer.name)
 
-    def request(self, player: Player, key: str):
+    def request(self, player: Player, key: str) -> str:
         # Send request message to player
         print('Requesting:', key)
         message = (key + 'Request').encode()
@@ -92,9 +85,6 @@ class Server:
         message = ('Game has started!').encode()
         for player in self.players:
             player.c.send(message)
-
-    def getImage(self):
-        pass
 
     def getText(self, memeImage: MemeImage, players: Player) -> MemeImage:
         for player in players:
