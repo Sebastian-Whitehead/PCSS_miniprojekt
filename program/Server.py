@@ -2,10 +2,16 @@ import socket, pickle, json
 from Player import Player
 from GameEngine import GameEngine
 
+""" MISSING:
+- Player disconnect
+- Host disconnect 
+"""
+
 class Server(GameEngine):
     def __init__(self, port):
         super().__init__()
 
+        # Start server
         self.s = socket.socket()
         self.host = socket.gethostname()
         self.port = port
@@ -13,6 +19,7 @@ class Server(GameEngine):
         print(self.s, 'Server is Running..')
         print('')
 
+        # Start game in lobby
         self.status = 'inLobby'
         self.run()
 
@@ -57,10 +64,8 @@ class Server(GameEngine):
             message = key
         print('Sending:', message, 'to', player.getName())
         message = json.dumps(message).encode()
-        # Packages the message with a matching key
-        package = {key: message}
-        # Send reply to server
-        player.c.send(pickle.dumps(package))
+        package = {key: message} # Packages the message with a matching key
+        player.c.send(pickle.dumps(package)) # Send reply to server
 
     def request(self, player: Player, message: [str], key: str) -> str:
         self.sendMessage(player, message, key)

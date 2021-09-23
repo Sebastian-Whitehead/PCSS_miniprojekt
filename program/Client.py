@@ -45,5 +45,4 @@ class Client:
     def kill(self):
         self.s.close()
 
-
 client = Client(1024)

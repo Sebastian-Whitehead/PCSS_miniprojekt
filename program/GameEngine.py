@@ -2,13 +2,13 @@ from MemeImage import MemeImage
 
 class GameEngine:
     def __init__(self):
-        self.players = []            # All players that are currently on the server (Keeps on disconnect)
-        self.memeImage = MemeImage() # Meme image (Not implemented)
+        self.players = []               # All players that are currently on the server (Keeps on disconnect)
+        self.memeImage = MemeImage()    # Meme image (Not implemented)
 
-        self.status = 'booting'
-        self.minPlayers = 1     # Minimum players on the server before the game can start
-        self.gameHost = False   # The game host
-        self.feedback = 0       # How many have gaven feedback to the server
+        self.status = 'booting'         # Game status
+        self.minPlayers = 1             # Minimum players on the server before the game can start
+        self.gameHost = False           # The game host
+        self.feedback = 0               # How many have gaven feedback to the server
 
     def gameRunning(self):
         self.isGameReady()
@@ -56,7 +56,11 @@ class GameEngine:
             self.status = 'handlingScore'
             self.feedback = 0
 
+            # Handling score
             print('Handling score..')
+
+            """ CODE MISSING """
+
             winner = "'pass'"
             print('')
 
@@ -65,7 +69,8 @@ class GameEngine:
                 self.sendMessage(player, 'Winner is ' + winner + '!', 'message')
             print('')
 
-            print('Requesting new game')
+            # Request new game
+            print('Requesting new game..')
             print('')
             self.memeImage.newRandomImage()
             self.status = 'inLobby'
