@@ -9,10 +9,8 @@ class MemeImage:
 
     def getRandomImage(self, path: str) -> str:
         files = os.listdir(path)
-        print(path)
-        d = random.choice(files)
-        ran = d
-        return ran
+        randomImage = random.choice(files)
+        return randomImage
 
     def getImage(self) -> str:
         return self.image
