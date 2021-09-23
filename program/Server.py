@@ -32,6 +32,7 @@ class Server:
         self.s.listen(5)
         while True:
             self.isGameReady()
+            self.imageScoreRequest()
 
             # Server listens for players joining the server
             player = Player()
@@ -98,7 +99,7 @@ class Server:
 
     def startGame(self):
         print('START GAME!!')
-        self.status = 'playing'
+        self.status = 'imageTextRequest'
         self.feedback = 0
 
         # Send image to all players
@@ -106,11 +107,13 @@ class Server:
             self.sendMessage(player, 'Game has started!', 'message')
             self.request(player, self.memeImage.image, 'imageTextRequest')
 
-        #if len(self.players) <= self.feedBack:
+    def imageScoreRequest(self):
+        if len(self.players) <= self.feedBack and self.status == 'imageTextRequest':
+            self.status = 'imageScoreRequest'
+            self.feedback = 0
             # Request score from players
-            #for player in self.players:
-              #  self.sendMessage(player, 'Game has started!')
-               # self.request(player, [self.memeImage.image], 'imageScoreRequest')
+            for player in self.players:
+                self.request(player, [self.memeImage.image], 'imageScoreRequest')
 
     def makeMeme(self, memeImage: MemeImage, players: Player) -> [MemeImage]:
         pass
