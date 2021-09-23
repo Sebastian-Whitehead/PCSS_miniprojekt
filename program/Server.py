@@ -26,6 +26,7 @@ class Server:
         print(self.s, 'Server is Running..')
         print('')
 
+        self.status = 'inLobby'
         self.run()
 
     def run(self):
@@ -33,6 +34,7 @@ class Server:
         while True:
             self.isGameReady()
             self.imageScoreRequest()
+            self.handlingScore()
 
             # Server listens for players joining the server
             player = Player()
@@ -66,6 +68,8 @@ class Server:
 
     def sendMessage(self, player: Player, message: [str], key: str):
         # Send message to player
+        if message == 'none':
+            message = key
         print('Sending:', message, 'to', player.getName())
         message = json.dumps(message).encode()
         # Packages the message with a matching key
@@ -74,7 +78,6 @@ class Server:
         player.c.send(pickle.dumps(package))
 
     def request(self, player: Player, message: [str], key: str) -> str:
-        print('Requesting:', key)
         self.sendMessage(player, message, key)
 
         # Listen for reply
@@ -91,10 +94,13 @@ class Server:
                 return clientMessage
 
     def isGameReady(self) -> bool:
-        if self.minPlayers <= len(self.players) and self.host and self.status != 'playing':
+        if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            if self.request(self.getGameHost(), 'none', 'startGameRequest') == 'True':
+            gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
+            if gameStart == 'True':
                 self.startGame()
+            else:
+                self.isGameReady()
         return False
 
     def startGame(self):
@@ -105,23 +111,42 @@ class Server:
         # Send image to all players
         for player in self.players:
             self.sendMessage(player, 'Game has started!', 'message')
+            print('')
             self.request(player, self.memeImage.image, 'imageTextRequest')
 
+        print('')
+
     def imageScoreRequest(self):
-        if len(self.players) <= self.feedBack and self.status == 'imageTextRequest':
+        if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
+            print('All players has send their image text')
             self.status = 'imageScoreRequest'
             self.feedback = 0
+
             # Request score from players
             for player in self.players:
                 self.request(player, [self.memeImage.image], 'imageScoreRequest')
 
-    def makeMeme(self, memeImage: MemeImage, players: Player) -> [MemeImage]:
-        pass
+            print('')
 
-    def getScore(self, memeImage: MemeImage, players: Player) -> [int]:
-        for player in players:
-            self.request(player, 'scoreRequest', 'none')
-        pass
+    def handlingScore(self):
+        if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
+            print('All players has send their opinion')
+            self.status = 'handlingScore'
+            self.feedback = 0
+
+            print('Handling score..')
+            winner = "'pass'"
+            print('')
+
+            # Sending winner to all players
+            for player in self.players:
+                self.sendMessage(player, 'Winner is ' + winner + '!', 'message')
+            print('')
+
+            print('Requesting new game')
+            print('')
+            self.status = 'inLobby'
+            self.run()
 
     def setGameHost(self, player: Player):
         self.gameHost = player
