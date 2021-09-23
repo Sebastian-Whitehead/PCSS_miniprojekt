@@ -1,21 +1,21 @@
 import random
-import os
-import cv2
+import os, os.path
 
 class MemeImage:
-    path = "C:\\Users\\Charlotte Johansen\\PycharmProjects\\miniprojectProgramming\\.memes"
+    path = "images"
 
     def __init__(self):
-        self.image = random.choice(self.images)
+        self.image = self.getRandomImage(self.path)
 
     def getRandomImage(self, path: str) -> str:
         files = os.listdir(path)
+        print(path)
         d = random.choice(files)
-         # os.startfile(d)
-        #ran = cv2.imread(d)
         ran = d
-        #ran = cv2.resize(ran, (640, 640))
-        #cv2.imshow("hej", ran)
-        #cv2.waitKey(0)
-
         return ran
+
+    def getImage(self) -> str:
+        return self.image
+
+memeImage = MemeImage()
+print(memeImage.getImage())

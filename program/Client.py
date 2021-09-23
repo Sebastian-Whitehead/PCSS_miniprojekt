@@ -27,9 +27,11 @@ class Client:
                     self.promptReply(serverKey, 'Enough players to start the game. Type "True" to start the game')
                 elif serverKey == 'imageTextRequest':
                     print('Image', serverMessage, 'recived.')
-                    #image = cv2.imread(serverMessage)
-                    #cv2.imshow(image)
-                    #cv2.KeyWait(10000)
+                     # os.startfile(d)
+                    ran = cv2.imread(serverMessage)
+                    ran = cv2.resize(ran, (640, 640))
+                    cv2.imshow("hej", ran)
+                    cv2.waitKey(0)
                     self.promptReply(serverKey, 'Type text to image')
                 elif serverKey == 'imageScoreRequest':
                     self.promptReply(serverKey, 'Type in the number of the best meme')
