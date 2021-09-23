@@ -145,6 +145,7 @@ class Server:
 
             print('Requesting new game')
             print('')
+            self.memeImage.newRandomImage()
             self.status = 'inLobby'
             self.run()
 

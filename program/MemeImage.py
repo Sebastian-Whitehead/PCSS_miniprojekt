@@ -5,12 +5,12 @@ class MemeImage:
     path = "images"
 
     def __init__(self):
-        self.image = self.getRandomImage()
+        self.newRandomImage()
 
-    def getRandomImage(self) -> str:
+    def newRandomImage(self) -> str:
         files = os.listdir(self.path)
         randomImage = self.path + '/' + random.choice(files)
-        return randomImage
+        self.image = randomImage
 
     def getImage(self) -> str:
         return self.image
