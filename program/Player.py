@@ -1,6 +1,5 @@
 class Player:
-    def __init__(self):
-        self.name = False # This is only to enable the class
+    pass
 
     def setName(self, name: str):
         self.name = name

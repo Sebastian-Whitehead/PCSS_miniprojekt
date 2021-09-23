@@ -32,7 +32,6 @@ class Server:
             self.clientJoined(player)
 
     def clientJoined(self, newPlayer):
-
         # Check if the user is already connected
         for player in self.players:
             if newPlayer.addr == player.addr:
