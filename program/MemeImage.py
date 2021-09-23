@@ -1,2 +1,7 @@
+import random
+
 class MemeImage:
-    pass
+    images = ['star.png']
+
+    def __init__(self):
+        self.image = random.choice(self.images)
