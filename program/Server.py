@@ -1,159 +1,41 @@
-# https://www.tutorialspoint.com/python/python_networking.htm
-import json
-import socket, pickle
-from MemeImage import MemeImage
-from Player import Player
+import socket
+import sys
+import cv2
+import pickle
+import numpy as np
+import struct ## new
+import zlib
 
-"""
-To do:
-- Send and recive images - Sebastian
-- Multi-threading - Tonko
-"""
+HOST=''
+PORT=8485
 
-class Server:
-    def __init__(self, port):
-        self.status = 'booting'
-        self.minPlayers = 1          # Minimum players on the server before the game can start
-        self.gameHost = False        # The game host
-        self.players = []            # All players that are currently on the server (Keeps on disconnect)
-        self.feedback = 0            # How many have gaven feedback to the server
-        self.memeImage = MemeImage() # Meme image (Not implemented)
+s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+print('Socket created')
 
-        self.s = socket.socket()
-        self.host = socket.gethostname()
-        self.port = port
-        self.s.bind((self.host, self.port))
-        print(self.s, 'Server is Running..')
-        print('')
+s.bind((HOST,PORT))
+print('Socket bind complete')
+s.listen(10)
+print('Socket now listening')
 
-        self.status = 'inLobby'
-        self.run()
+conn,addr=s.accept()
 
-    def run(self):
-        self.s.listen(5)
-        while True:
-            self.isGameReady()
-            self.imageScoreRequest()
-            self.handlingScore()
+data = b""
+payload_size = struct.calcsize(">L")
+print("payload_size: {}".format(payload_size))
+while len(data) < payload_size:
+    print("Recv: {}".format(len(data)))
+    data += conn.recv(4096)
 
-            # Server listens for players joining the server
-            player = Player()
-            player.c, player.addr = self.s.accept()
-            print('Got connection from:', player.addr)
-            self.sendMessage(player, 'Thank you for connecting.', 'message')
-            self.clientJoined(player)
+print("Done Recv: {}".format(len(data)))
+packed_msg_size = data[:payload_size]
+data = data[payload_size:]
+msg_size = struct.unpack(">L", packed_msg_size)[0]
+print("msg_size: {}".format(msg_size))
+while len(data) < msg_size:
+        data += conn.recv(4096)
+frame_data = data[:msg_size]
+data = data[msg_size:]
 
-    def clientJoined(self, newPlayer):
-        # Check if the user is already connected
-        for player in self.players:
-            if newPlayer.addr == player.addr:
-                return print('Old player')
-
-        # Request the name of the player
-        name = self.request(newPlayer, 'none', 'nameRequest')
-        newPlayer.setName(name)
-        self.players.append(newPlayer)
-        print('New player')
-
-        # Confirm player with a message
-        message = 'Hi, ' + newPlayer.getName() + '!'
-        self.sendMessage(newPlayer, message, 'message')
-
-        # Set player to be game host if none
-        if not self.getGameHost():
-            self.setGameHost(newPlayer)
-            print('Host:', newPlayer.getName())
-
-        print('')
-
-    def sendMessage(self, player: Player, message: [str], key: str):
-        # Send message to player
-        if message == 'none':
-            message = key
-        print('Sending:', message, 'to', player.getName())
-        message = json.dumps(message).encode()
-        # Packages the message with a matching key
-        package = {key: message}
-        # Send reply to server
-        player.c.send(pickle.dumps(package))
-
-    def request(self, player: Player, message: [str], key: str) -> str:
-        self.sendMessage(player, message, key)
-
-        # Listen for reply
-        self.s.listen(5)
-        print('Listening..')
-        while True:
-            # Getting a reply from the player
-            recive = player.c.recv(1024)
-            if recive:
-                package = pickle.loads(recive)
-                clientMessage = package[key].decode()
-                print(player.getName(), 'sent:', key, '->', clientMessage)
-                self.feedback += 1
-                return clientMessage
-
-    def isGameReady(self) -> bool:
-        if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
-            print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
-            if gameStart == 'True':
-                self.startGame()
-            else:
-                self.isGameReady()
-        return False
-
-    def startGame(self):
-        print('START GAME!!')
-        self.status = 'imageTextRequest'
-        self.feedback = 0
-
-        # Send image to all players
-        for player in self.players:
-            self.sendMessage(player, 'Game has started!', 'message')
-            print('')
-            self.request(player, self.memeImage.image, 'imageTextRequest')
-
-        print('')
-
-    def imageScoreRequest(self):
-        if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
-            print('All players has send their image text')
-            self.status = 'imageScoreRequest'
-            self.feedback = 0
-
-            # Request score from players
-            for player in self.players:
-                self.request(player, [self.memeImage.image], 'imageScoreRequest')
-
-            print('')
-
-    def handlingScore(self):
-        if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
-            print('All players has send their opinion')
-            self.status = 'handlingScore'
-            self.feedback = 0
-
-            print('Handling score..')
-            winner = "'pass'"
-            print('')
-
-            # Sending winner to all players
-            for player in self.players:
-                self.sendMessage(player, 'Winner is ' + winner + '!', 'message')
-            print('')
-
-            print('Requesting new game')
-            print('')
-            self.memeImage.newRandomImage()
-            self.status = 'inLobby'
-            self.run()
-
-    def setGameHost(self, player: Player):
-        self.gameHost = player
-
-    def getGameHost(self) -> Player:
-        return self.gameHost
-
-    def kill(self):
-        self.c.close()
+frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+cv2.imshow('ImageWindow',frame)
+cv2.waitKey(0)
