@@ -1,4 +1,5 @@
 # https://www.tutorialspoint.com/python/python_networking.htm
+import json
 import socket, pickle  # Import socket module
 import cv2
 
@@ -18,7 +19,7 @@ class Client:
             recive = self.s.recv(1024)
             package = pickle.loads(recive)
             serverKey = list(package)[0]
-            serverMessage = package[serverKey].decode("utf-8")
+            serverMessage = json.loads(package[serverKey].decode("utf-8"))
             if serverKey:
                 if serverKey == 'nameRequest':
                     self.promptReply(serverKey, 'Hi! What is your name?. Type your name here')
@@ -30,7 +31,9 @@ class Client:
                     #cv2.imshow(image)
                     #cv2.KeyWait(10000)
                     self.promptReply(serverKey, 'Type text to image')
-                else:
+                elif serverKey == 'imageScoreRequest':
+                    self.promptReply(serverKey, 'Type in the number of the best meme')
+                elif serverKey == 'message':
                     print(serverMessage)
 
     def promptReply(self, key: str, UIMessage: str):
