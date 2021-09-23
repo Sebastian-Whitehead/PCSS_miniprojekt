@@ -1,13 +1,10 @@
 import socket, pickle, json
-from MemeImage import MemeImage
 from Player import Player
 from GameEngine import GameEngine
 
 class Server(GameEngine):
     def __init__(self, port):
         super().__init__()
-        self.players = []            # All players that are currently on the server (Keeps on disconnect)
-        self.memeImage = MemeImage() # Meme image (Not implemented)
 
         self.s = socket.socket()
         self.host = socket.gethostname()
