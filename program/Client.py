@@ -14,7 +14,6 @@ class Client:
         while True:
             # Receiving a request or message
             receive = self.s.recv(1024)
-            print(receive)
             package = pickle.loads(receive)
             serverKey = list(package)[0]
             serverMessage = json.loads(package[serverKey].decode("utf-8"))

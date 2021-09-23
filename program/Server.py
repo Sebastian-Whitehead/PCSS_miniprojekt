@@ -62,7 +62,7 @@ class Server(GameEngine):
         # Send message to player
         if message == 'none':
             message = key
-        print('Sending:', message, 'to', player.getName())
+        print('Sending:', '"' + message + '"', 'to', player.getName())
         message = json.dumps(message).encode()
         package = {key: message} # Packages the message with a matching key
         player.c.send(pickle.dumps(package)) # Send reply to server
