@@ -1,22 +1,12 @@
-# https://www.tutorialspoint.com/python/python_networking.htm
-import json
-import socket, pickle
+import socket, pickle, json
 from MemeImage import MemeImage
 from Player import Player
+from GameEngine import GameEngine
 
-"""
-To do:
-- Send and recive images - Sebastian
-- Multi-threading - Tonko
-"""
-
-class Server:
+class Server(GameEngine):
     def __init__(self, port):
-        self.status = 'booting'
-        self.minPlayers = 1          # Minimum players on the server before the game can start
-        self.gameHost = False        # The game host
+        super().__init__()
         self.players = []            # All players that are currently on the server (Keeps on disconnect)
-        self.feedback = 0            # How many have gaven feedback to the server
         self.memeImage = MemeImage() # Meme image (Not implemented)
 
         self.s = socket.socket()
@@ -32,9 +22,7 @@ class Server:
     def run(self):
         self.s.listen(5)
         while True:
-            self.isGameReady()
-            self.imageScoreRequest()
-            self.handlingScore()
+            self.gameRunning()
 
             # Server listens for players joining the server
             player = Player()
@@ -85,69 +73,13 @@ class Server:
         print('Listening..')
         while True:
             # Getting a reply from the player
-            recive = player.c.recv(1024)
-            if recive:
-                package = pickle.loads(recive)
+            receive = player.c.recv(1024)
+            if receive:
+                package = pickle.loads(receive)
                 clientMessage = package[key].decode()
                 print(player.getName(), 'sent:', key, '->', clientMessage)
                 self.feedback += 1
                 return clientMessage
-
-    def isGameReady(self) -> bool:
-        if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
-            print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
-            if gameStart == 'True':
-                self.startGame()
-            else:
-                self.isGameReady()
-        return False
-
-    def startGame(self):
-        print('START GAME!!')
-        self.status = 'imageTextRequest'
-        self.feedback = 0
-
-        # Send image to all players
-        for player in self.players:
-            self.sendMessage(player, 'Game has started!', 'message')
-            print('')
-            self.request(player, self.memeImage.image, 'imageTextRequest')
-
-        print('')
-
-    def imageScoreRequest(self):
-        if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
-            print('All players has send their image text')
-            self.status = 'imageScoreRequest'
-            self.feedback = 0
-
-            # Request score from players
-            for player in self.players:
-                self.request(player, [self.memeImage.image], 'imageScoreRequest')
-
-            print('')
-
-    def handlingScore(self):
-        if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
-            print('All players has send their opinion')
-            self.status = 'handlingScore'
-            self.feedback = 0
-
-            print('Handling score..')
-            winner = "'pass'"
-            print('')
-
-            # Sending winner to all players
-            for player in self.players:
-                self.sendMessage(player, 'Winner is ' + winner + '!', 'message')
-            print('')
-
-            print('Requesting new game')
-            print('')
-            self.memeImage.newRandomImage()
-            self.status = 'inLobby'
-            self.run()
 
     def setGameHost(self, player: Player):
         self.gameHost = player
