@@ -1,4 +1,4 @@
-import socket, pickle, json
+import socket, pickle, json, threading
 from Player import Player
 from GameEngine import GameEngine
 
@@ -26,7 +26,7 @@ class Server(GameEngine):
     def run(self):
         self.s.listen(5)
         while True:
-            self.gameRunning()
+            self.gameRunning(self)
 
             # Server listens for players joining the server
             player = Player()

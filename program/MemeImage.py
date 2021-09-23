@@ -8,8 +8,8 @@ class MemeImage:
         self.newRandomImage()
 
     def newRandomImage(self) -> str:
-        files = os.listdir(self.path)
-        randomImage = self.path + '/' + random.choice(files)
+        files = os.listdir(MemeImage.path)
+        randomImage = MemeImage.path + '/' + random.choice(files)
         self.image = randomImage
 
     def getImage(self) -> str:

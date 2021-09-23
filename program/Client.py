@@ -1,7 +1,4 @@
-# https://www.tutorialspoint.com/python/python_networking.htm
-import json
-import socket, pickle  # Import socket module
-import cv2
+import socket, pickle, cv2, json
 
 class Client:
     def __init__(self, port):
@@ -16,8 +13,9 @@ class Client:
         # Listens for request or message from the server
         while True:
             # Receiving a request or message
-            recive = self.s.recv(1024)
-            package = pickle.loads(recive)
+            receive = self.s.recv(1024)
+            print(receive)
+            package = pickle.loads(receive)
             serverKey = list(package)[0]
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
             if serverKey:

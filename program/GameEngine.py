@@ -1,60 +1,56 @@
 from MemeImage import MemeImage
 
-class GameEngine:
+class GameEngine():
     def __init__(self):
         self.players = []               # All players that are currently on the server (Keeps on disconnect)
         self.memeImage = MemeImage()    # Meme image (Not implemented)
 
-        self.status = 'booting'         # Game status
         self.minPlayers = 1             # Minimum players on the server before the game can start
         self.gameHost = False           # The game host
-        self.feedback = 0               # How many have gaven feedback to the server
+        self.setStatus('booting')
 
-    def gameRunning(self):
-        self.isGameReady()
-        self.imageScoreRequest()
-        self.handlingScore()
+    def gameRunning(self, server):
+        self.isGameReady(server)
+        self.imageScoreRequest(server)
+        self.handlingScore(server)
 
-    def isGameReady(self) -> bool:
+    def isGameReady(self, server) -> bool:
         if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
             gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
             if gameStart == 'True':
-                self.startGame()
+                self.startGame(server)
             else:
-                self.isGameReady()
+                self.isGameReady(server)
         return False
 
-    def startGame(self):
+    def startGame(self, server):
         print('START GAME!!')
-        self.status = 'imageTextRequest'
-        self.feedback = 0
+        self.setStatus('imageTextRequest')
 
         # Send image to all players
         for player in self.players:
-            self.sendMessage(player, 'Game has started!', 'message')
+            server.sendMessage(player, 'Game has started!', 'message')
             print('')
-            self.request(player, self.memeImage.image, 'imageTextRequest')
+            server.request(player, self.memeImage.image, 'imageTextRequest')
 
         print('')
 
-    def imageScoreRequest(self):
+    def imageScoreRequest(self, server):
         if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
             print('All players has send their image text')
-            self.status = 'imageScoreRequest'
-            self.feedback = 0
+            self.setStatus('imageScoreRequest')
 
             # Request score from players
             for player in self.players:
-                self.request(player, [self.memeImage.image], 'imageScoreRequest')
+                server.request(player, [self.memeImage.image], 'imageScoreRequest')
 
             print('')
 
-    def handlingScore(self):
+    def handlingScore(self, server):
         if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
             print('All players has send their opinion')
-            self.status = 'handlingScore'
-            self.feedback = 0
+            self.setStatus('handlingScore')
 
             # Handling score
             print('Handling score..')
@@ -66,12 +62,17 @@ class GameEngine:
 
             # Sending winner to all players
             for player in self.players:
-                self.sendMessage(player, 'Winner is ' + winner + '!', 'message')
+                server.sendMessage(player, 'Winner is ' + winner + '!', 'message')
             print('')
 
             # Request new game
             print('Requesting new game..')
             print('')
             self.memeImage.newRandomImage()
-            self.status = 'inLobby'
-            self.run()
+            self.setStatus('inLobby')
+            return server.run()
+
+    def setStatus(self, status: str) -> bool:
+        self.status = status
+        self.feedback = 0
+        return True
