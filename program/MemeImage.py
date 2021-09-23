@@ -2,7 +2,7 @@ import random
 import os
 import cv2
 
-class MemeImage:
+class RandomMemeImage:
 
     def getRandomImage():
         path = "C:\\Users\\Charlotte Johansen\\PycharmProjects\\miniprojectProgramming\\.memes"
@@ -15,3 +15,9 @@ class MemeImage:
         cv2.waitKey(0)
 
     getRandomImage()
+
+class MemeImage:
+    images = ['star.png']
+
+    def __init__(self):
+        self.image = random.choice(self.images)
