@@ -4,11 +4,11 @@
 Deadline: Tuesday, 23 November 2021, 12:00 AM
 
 Group members:
-- Sebastian
-- Rebecca
-- Tobias
-- Charlotte
-- Tonko
+- Charlotte (The boss one)
+- Rebecca (The swag one)
+- Sebastian (The knighty one)
+- Tobias (The cool one)
+- Tonko (The cute one)
 
 Kenned-Kasse!
 - A Jack-box-(inspired) party game on computer
