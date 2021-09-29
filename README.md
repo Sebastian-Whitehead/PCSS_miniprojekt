@@ -4,11 +4,11 @@
 Deadline: Tuesday, 23 November 2021, 12:00 AM
 
 Group members:
-- Charlotte (The boss one)
-- Rebecca (The swag one)
+- Charlotte (The bossy one)
+- Rebecca (The swaggy one)
 - Sebastian (The knighty one)
-- Tobias (The cool one)
-- Tonko (The cute one)
+- Tobias (The cooly one)
+- Tonko (The cutiy one)
 
 Kenned-Kasse!
 Make amazingly funny memes with your friends and pick the winner over them all!!1!
