@@ -2,6 +2,7 @@ import threading
 
 class Player():#threading.Thread):
     size = 0
+    image = False
 
     def __init__(self):
         #threading.Thread.__init__(self)

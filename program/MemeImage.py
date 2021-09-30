@@ -1,5 +1,6 @@
 import random
 import os, os.path
+import cv2
 
 class MemeImage:
     path = "images"
@@ -10,7 +11,7 @@ class MemeImage:
     def newRandomImage(self) -> str:
         files = os.listdir(MemeImage.path)
         randomImage = MemeImage.path + '/' + random.choice(files)
-        self.image = randomImage
+        self.image = cv2.imread(randomImage)
 
     def getImage(self) -> str:
         return self.image

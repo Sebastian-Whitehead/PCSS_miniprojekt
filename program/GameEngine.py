@@ -1,13 +1,29 @@
+import threading
+import time
+
+import cv2
+import threading
+from ClientThread import ClientThread
+
 from MemeImage import MemeImage
 
-class GameEngine():
-    def __init__(self):
-        self.players = []               # All players that are currently on the server (Keeps on disconnect)
-        self.memeImage = MemeImage()    # Meme image (Not implemented)
 
-        self.minPlayers = 1             # Minimum players on the server before the game can start
-        self.gameHost = False           # The game host
+class GameEngine(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.players = []  # All players that are currently on the server (Keeps on disconnect)
+        self.memeImage = MemeImage()  # Meme image (Not implemented)
+
+        self.minPlayers = 1  # Minimum players on the server before the game can start
+        self.gameHost = False  # The game host
         self.setStatus('booting')
+
+    def run(self):
+        print
+        "Starting " + self.name
+        # print_time(self.name, 5, self.counter)
+        # print
+        "Exiting " + self.name
 
     def gameRunning(self, server):
         self.isGameReady(server)
@@ -32,7 +48,35 @@ class GameEngine():
         for player in self.players:
             server.sendMessage(player, 'Game has started!', 'message')
             print('')
-            server.request(player, self.memeImage.image, 'imageTextRequest')
+
+            server.sendMessage(player, 'imageTextRequest', 'message')
+
+            threads = []
+
+            thread1 = threading.Thread(
+                target=server.sendImage,
+                args=(self.memeImage.image, player.c)
+            )
+
+            thread1.start()
+            threads.append(thread1)
+            thread1.join()
+
+            thread2 = threading.Thread(
+                target=server.listen,
+                args=(player, 'imageTextRequest')
+            )
+            thread2.start()
+            threads.append(thread2)
+
+            while thread2 is None:
+                print('No result')
+
+            thread2.join()
+
+            player.image = server.receiveImage(player.c)
+            if player.image != False:
+                self.feedback += 1
 
         print('')
 
@@ -42,8 +86,28 @@ class GameEngine():
             self.setStatus('imageScoreRequest')
 
             # Request score from players
-            for player in self.players:
-                server.request(player, [self.memeImage.image], 'imageScoreRequest')
+            for pos, player in enumerate(self.players):
+                server.sendMessage(player, len(server.players), 'imageScoreRequest')
+                eachPlayer = 0
+                #while eachPlayer <= len(self.players) - 1:
+                for eachPlayer, image in enumerate(self.players):
+                    if self.players[eachPlayer].image != False:
+                        thread1 = threading.Thread(
+                            target=server.sendImage,
+                            args=(self.players[eachPlayer].image, player.c)
+                        )
+                        thread1.start()
+                        thread1.join()
+                        eachPlayer += 1
+
+                if len(self.players) - 1 <= pos:
+                    thread2 = threading.Thread(
+                        target=server.listen,
+                        args=(player, 'imageTextRequest')
+                    )
+                    thread2.start()
+                    thread2.join()
+                server.receiveImage(player.c)
 
             print('')
 
