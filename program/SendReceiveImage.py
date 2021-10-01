@@ -1,12 +1,10 @@
-import cv2
-import struct
-import pickle
+import struct, pickle
 from datetime import datetime
-import time
-import threading
 
+# Methods for sending and receiving image from server to client and back
 class SendReceiveImage:
 
+    # Send image either way Server <-> Client
     def sendImage(self, frame, sendTo):
         print('Sending image..')
         connection = sendTo.makefile('wb')
@@ -26,6 +24,7 @@ class SendReceiveImage:
 
         return True
 
+    # Receive image either way Server <-> Client
     def receiveImage(self, c):
         print('Receiving image..')
         data = b""

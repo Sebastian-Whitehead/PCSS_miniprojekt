@@ -2,7 +2,6 @@ import socket, pickle, json, threading
 from Player import Player
 from GameEngine import GameEngine
 from SendReceiveImage import SendReceiveImage
-from ClientThread import ClientThread
 
 """ MISSING:
 - Player disconnect

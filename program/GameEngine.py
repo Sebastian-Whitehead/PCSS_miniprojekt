@@ -1,13 +1,11 @@
 import threading
-import time
-
-import cv2
-import threading
-from ClientThread import ClientThread
-
 from MemeImage import MemeImage
 
-
+"""
+# Game engine for the game, keeping track of each step
+# Will continue to next step of the game, when Feedback
+  is equal to amount of players in the game
+"""
 class GameEngine(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -18,18 +16,13 @@ class GameEngine(threading.Thread):
         self.gameHost = False  # The game host
         self.setStatus('booting')
 
-    def run(self):
-        print
-        "Starting " + self.name
-        # print_time(self.name, 5, self.counter)
-        # print
-        "Exiting " + self.name
-
+    # Run the Game Engine on the server
     def gameRunning(self, server):
         self.isGameReady(server)
         self.imageScoreRequest(server)
         self.handlingScore(server)
 
+    # Sending game start request to game host, when game is ready to start
     def isGameReady(self, server) -> bool:
         if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
@@ -40,6 +33,8 @@ class GameEngine(threading.Thread):
                 self.isGameReady(server)
         return False
 
+    # Start the game - send random image to all players
+    # Get meme or image text in return
     def startGame(self, server):
         print('START GAME!!')
         self.setStatus('imageTextRequest')
@@ -80,6 +75,8 @@ class GameEngine(threading.Thread):
 
         print('')
 
+    # Send all memes to all players
+    # Request each player for a favorite meme
     def imageScoreRequest(self, server):
         if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
             print('All players has send their image text')
@@ -111,6 +108,8 @@ class GameEngine(threading.Thread):
 
             print('')
 
+    # Handle favorite memes and calculate a score
+    # Send message to all player who the winner is, and what image it is
     def handlingScore(self, server):
         if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
             print('All players has send their opinion')
@@ -136,6 +135,9 @@ class GameEngine(threading.Thread):
             self.setStatus('inLobby')
             return server.run()
 
+    # Set the status and reset feedback
+    # Feedback will activate the next step of the game,
+    # when all players has reacted in the current step
     def setStatus(self, status: str) -> bool:
         self.status = status
         self.feedback = 0
