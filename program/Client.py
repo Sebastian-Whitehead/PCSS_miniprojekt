@@ -1,7 +1,7 @@
 import socket, pickle, cv2, json
 from SendReceiveImage import SendReceiveImage
 
-def makeImage(image, text: str):
+def makeImageToMeme(image, text: str):
     return image
 
 class Client(SendReceiveImage):
@@ -11,9 +11,6 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = port
         self.s.connect((self.host, self.port))
-        self.images = []
-
-        self.listen()
         self.memes = []                        # All images gotten from server made from other players
 
         self.listen()                           # Start listen for messages from the server
@@ -126,10 +123,13 @@ class Client(SendReceiveImage):
     # Prompt the player for a reply it can send to the server
 >>>>>>> Stashed changes
     def promptReply(self, key: str, UIMessage: str):
+        message = input(UIMessage + ': ')               # Prompts the user for a reply
+        package = {key: message.encode()}               # Packages the message with a matching key
+        self.s.send(pickle.dumps(package))              # Send reply to server
         print('')
-        return message
 
     # Close Function
     def kill(self):
         self.s.close()
 
+client = Client(1024)
