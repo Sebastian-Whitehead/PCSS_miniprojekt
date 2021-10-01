@@ -31,7 +31,7 @@ class Server(GameEngine, SendReceiveImage):
     # Server Starts Listening for players joining the server
     def run(self):
         self.s.listen(5)
-        while True:
+        while True: # While Listening
 
             # Server listens for players joining the server
             player = Player()
