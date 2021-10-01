@@ -10,6 +10,8 @@ from ClientThread import ClientThread
 """
 
 class Server(GameEngine, SendReceiveImage):
+
+    # Initital Function Starts Server & Game Lobby
     def __init__(self, port):
         super().__init__()
 
@@ -26,6 +28,7 @@ class Server(GameEngine, SendReceiveImage):
         self.feedback = 0
         self.run()
 
+    # Server Starts Listening for players joining the server
     def run(self):
         self.s.listen(5)
         while True:
@@ -38,8 +41,8 @@ class Server(GameEngine, SendReceiveImage):
             self.clientJoined(player)
 
             self.gameRunning(self)
-        #self.s.close()
 
+    # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
         # Check if the user is already connected
         for player in self.players:
@@ -63,6 +66,7 @@ class Server(GameEngine, SendReceiveImage):
 
         print('')
 
+    # Send message to specified player
     def sendMessage(self, player: Player, message: [str], key: str):
         # Send message to player
         if message == 'none' or type(message) != str:
@@ -73,10 +77,12 @@ class Server(GameEngine, SendReceiveImage):
         package = {key: message} # Packages the message with a matching key
         player.c.send(pickle.dumps(package)) # Send reply to server
 
+    # Send data request/ Response to client
     def request(self, player: Player, message: [str], key: str) -> str:
         self.sendMessage(player, message, key)
         return self.listen(player, key)
 
+    # Listen for repsponse to data request
     def listen(self, player: Player, key: str):
         # Listen for reply
         self.s.listen(5)
@@ -90,11 +96,14 @@ class Server(GameEngine, SendReceiveImage):
                 print(player.getName(), 'sent:', key, '->', clientMessage)
                 return clientMessage
 
+    # Setter for game host role
     def setGameHost(self, player: Player):
         self.gameHost = player
 
+    # Getter for game host role
     def getGameHost(self) -> Player:
         return self.gameHost
 
+    # Server Close Function
     def kill(self):
         self.c.close()
