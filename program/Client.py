@@ -59,60 +59,13 @@ class Client(SendReceiveImage):
 
     # Listens for request or message from the server
     def listen(self):
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
         while True:
-
             # Receiving a request or message
             receive = self.s.recv(1024)
             package = pickle.loads(receive)
             serverKey = list(package)[0]
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
             if serverKey:
-<<<<<<< Updated upstream
-                if serverKey == 'nameRequest': # Server is requesting player name
-                    self.promptReply(serverKey, 'Hi! What is your name?. Type your name here')
-
-                elif serverKey == 'startGameRequest': # Requesting host to start game
-                    self.promptReply(serverKey, 'Enough players to start the game. Type "True" to start the game')
-
-                elif serverKey == 'imageTextRequest': # Requesting text for image
-                    frame_data = self.receiveImage(self.s)
-                    frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-
-                    # Show image
-                    #cv2.imshow('ImageWindow', frame)
-                    #cv2.waitKey(0)
-
-                    imageText = self.promptReply(serverKey, 'Type text to image')
-                    if 0 < len(imageText):
-                        imageWithText = makeImage(frame, imageText)
-                        self.sendImage(imageWithText, self.s)
-
-                elif serverKey == 'imageScoreRequest': # Requesting player to pick the best image
-
-                    for i in range(0, int(serverMessage) + 1):
-                        frame_data = self.receiveImage(self.s)
-                        frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-                        self.images.append(frame)
-
-                    for pos, image in enumerate(self.images):
-                        cv2.imshow('Image ' + str(pos), image)
-                    cv2.waitKey(0)
-                    self.promptReply(serverKey, 'Type in the number of the best meme')
-
-                elif serverKey == 'message': #Recieveing text message from server
-                    print(serverMessage)
-                    print('')
-
-                else:
-                    print('Unknown message from server..')
-
-    # Prompts user for specified reply from "listen"
-=======
                 if serverKey == 'nameRequest': self.nameRequst(serverKey)
                 elif serverKey == 'startGameRequest': self.startGameRequest(serverKey)
                 elif serverKey == 'imageTextRequest': self.imageTextRequst(serverKey)
@@ -121,7 +74,6 @@ class Client(SendReceiveImage):
                 else: print('Unknown message from server..') # Error message to console, no key found
 
     # Prompt the player for a reply it can send to the server
->>>>>>> Stashed changes
     def promptReply(self, key: str, UIMessage: str):
         message = input(UIMessage + ': ')               # Prompts the user for a reply
         package = {key: message.encode()}               # Packages the message with a matching key
