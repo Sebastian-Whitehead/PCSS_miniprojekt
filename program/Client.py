@@ -1,10 +1,11 @@
-import socket, pickle, cv2, json
+import socket, pickle, json
 from SendReceiveImage import SendReceiveImage
+from UI.main import tkinterApp
 
 def makeImageToMeme(image, text: str):
     return image
 
-class Client(SendReceiveImage):
+class Client(SendReceiveImage, tkinterApp):
     # Initial setup
     def __init__(self):
         ip = input('Ip: ')
@@ -17,7 +18,9 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = 1024
         self.s.connect((self.host, self.port))
-        self.memes = []                         # All images gotten from server made from other players
+
+        self.mainloop()
+        self.memes = []                        # All images gotten from server made from other players
 
         self.listen()                           # Start listen for messages from the server
 

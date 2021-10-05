@@ -10,7 +10,7 @@ class GameEngine(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.players = []  # All players that are currently on the server (Keeps on disconnect)
-        self.memeImage = MemeImage()  # Meme image (Not implemented)
+       # self.memeImage = MemeImage()  # Meme image (Not implemented)
 
         self.minPlayers = 1  # Minimum players on the server before the game can start
         self.gameHost = False  # The game host
