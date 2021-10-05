@@ -6,12 +6,18 @@ def makeImageToMeme(image, text: str):
 
 class Client(SendReceiveImage):
     # Initial setup
-    def __init__(self, port):
-        self.s = socket.socket()
+    def __init__(self):
+        ip = input('Ip: ')
+        name = input('name: ')
+        self.connectToServer(ip, name)
+
+    def connectToServer(self, ip, name):
+        print('Connecting')
+        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.host = socket.gethostname()
-        self.port = port
+        self.port = 1024
         self.s.connect((self.host, self.port))
-        self.memes = []                        # All images gotten from server made from other players
+        self.memes = []                         # All images gotten from server made from other players
 
         self.listen()                           # Start listen for messages from the server
 
@@ -84,4 +90,4 @@ class Client(SendReceiveImage):
     def kill(self):
         self.s.close()
 
-client = Client(1024)
+client = Client()

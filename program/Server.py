@@ -15,10 +15,11 @@ class Server(GameEngine, SendReceiveImage):
         super().__init__()
 
         # Start server
-        self.s = socket.socket()
+        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = port
         self.s.bind((self.host, self.port))
+        print(socket.gethostname())
         print(self.s, 'Server is Running..')
         print('')
 
