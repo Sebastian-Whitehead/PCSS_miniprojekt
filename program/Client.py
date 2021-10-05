@@ -8,8 +8,10 @@ def makeImageToMeme(image, text: str):
 class Client(SendReceiveImage, tkinterApp):
     # Initial setup
     def __init__(self):
-        ip = input('Ip: ')
-        name = input('name: ')
+      #  ip = input('Ip: ')
+       # name = input('name: ')
+        ip = 0
+        name = ''
         self.connectToServer(ip, name)
 
     def connectToServer(self, ip, name):
