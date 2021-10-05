@@ -65,20 +65,18 @@ class StartPage(tk.Frame):
         label.grid(row=1, column=0, padx=10, pady=10)
 
         #Name of player
-        entry1: Entry = tk.Entry(self)
-        entry1.grid(row=2, column=0, padx=10, pady=10)
-        entry1.get()
+        self.PName: Entry = tk.Entry(self)
+        self.PName.grid(row=2, column=0, padx=10, pady=10)
+
 
         label = ttk.Label(self, text="IP hmm?")
         label.grid(row=3, column=0, padx=10, pady=10)
 
         #IPhjmmm
-        entry1: Entry = tk.Entry(self)
-        entry1.grid(row=4, column=0, padx=10, pady=10)
-        entry1.get()
+        self.IPName: Entry = tk.Entry(self)
+        self.IPName.grid(row=4, column=0, padx=10, pady=10)
 
-        button1 = ttk.Button(self, text="Join Game",
-                             command=lambda: controller.show_frame(Page1))
+        button1 = ttk.Button(self, text="Join Game", command= lambda: [controller.show_frame(Page1), self.fetchData()])
         button1.grid(row=5, column=0, padx=10, pady=10)
 
         meme = Image.open('UI/work.jpg')
@@ -87,6 +85,9 @@ class StartPage(tk.Frame):
         meme_lbl.image = meme
         meme_lbl.grid(row=6, column=0, padx=10, pady=10)
 
+    def fetchData(self):
+        print(self.PName.get())
+        print(self.IPName.get())
 
 # Where you wait for game to start
 class Page1(tk.Frame):
@@ -145,13 +146,16 @@ class Page2(tk.Frame):
         meme_lbl.grid(row=1, column=1, padx=10, pady=10)
 
         # Text box to write funny haha meme
-        entry1: Entry = tk.Entry(self)
-        entry1.grid(row=2, column=1, padx=10, pady=10)
-        entry1.get()
+        self.MemeText: Entry = tk.Entry(self)
+        self.MemeText.grid(row=2, column=1, padx=10, pady=10)
+
 
         button2 = ttk.Button(self, text="Submit",
-                             command=lambda: controller.show_frame(Page3))
+                             command=lambda: [controller.show_frame(Page3), self.fetchText()])
         button2.grid(row=3, column=1, padx=10, pady=10)
+
+    def fetchText(self):
+        print(self.MemeText.get())
 
 # Voting screen leggoooo
 class Page3(tk.Frame):
@@ -179,6 +183,7 @@ class Page3(tk.Frame):
                 meme_lbl = tk.Label(self, image=meme)
                 meme_lbl.image = meme
                 # Makes the images go into a grid
+                
                 if int(x / 2) == 0:
                     meme_lbl.grid(row=int(x / 2 + 1), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
