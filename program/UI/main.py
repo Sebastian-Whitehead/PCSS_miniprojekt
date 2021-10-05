@@ -64,6 +64,7 @@ class StartPage(tk.Frame):
         label = ttk.Label(self, text="Navn hmm?")
         label.grid(row=1, column=0, padx=10, pady=10)
 
+        #Name of player
         entry1: Entry = tk.Entry(self)
         entry1.grid(row=2, column=0, padx=10, pady=10)
         entry1.get()
@@ -71,6 +72,7 @@ class StartPage(tk.Frame):
         label = ttk.Label(self, text="IP hmm?")
         label.grid(row=3, column=0, padx=10, pady=10)
 
+        #IPhjmmm
         entry1: Entry = tk.Entry(self)
         entry1.grid(row=4, column=0, padx=10, pady=10)
         entry1.get()
