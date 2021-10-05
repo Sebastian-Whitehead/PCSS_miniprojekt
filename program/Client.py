@@ -20,7 +20,7 @@ class Client(SendReceiveImage, tkinterApp):
         self.s.connect((self.host, self.port))
 
         self.mainloop()
-        self.memes = []                        # All images gotten from server made from other players
+        self.memes = []                         # All images gotten from server made from other players
 
         self.listen()                           # Start listen for messages from the server
 
