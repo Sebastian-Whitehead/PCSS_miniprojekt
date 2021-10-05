@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 
+
 LARGEFONT = ("Verdana", 35)
 
 players = 4
@@ -78,7 +79,7 @@ class StartPage(tk.Frame):
                              command=lambda: controller.show_frame(Page1))
         button1.grid(row=5, column=0, padx=10, pady=10)
 
-        meme = Image.open('work.jpg')
+        meme = Image.open('UI/work.jpg')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
@@ -104,7 +105,7 @@ class Page1(tk.Frame):
                              command=lambda: controller.show_frame(Page2))
         button2.place(relx=.5, rely=0.22, anchor="c")
 
-        meme = Image.open('progmeme.png')
+        meme = Image.open('UI/progmeme.png')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
@@ -125,7 +126,7 @@ class Page2(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
-        meme = Image.open('work.jpg')
+        meme = Image.open('UI/work.jpg')
         w, h = meme.size
         if w > h:
             scale = w / h
@@ -163,7 +164,7 @@ class Page3(tk.Frame):
 
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
-            meme = Image.open('andreas.png')
+            meme = Image.open('UI/andreas.png')
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
