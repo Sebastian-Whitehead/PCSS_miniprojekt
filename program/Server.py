@@ -1,38 +1,37 @@
-# https://www.tutorialspoint.com/python/python_networking.htm
-import json
-import socket, pickle
-from MemeImage import MemeImage
+import socket, pickle, json, threading
 from Player import Player
+from GameEngine import GameEngine
+from SendReceiveImage import SendReceiveImage
 
-"""
-To do:
-- Send and recive images - Sebastian
-- Multi-threading - Tonko
+""" MISSING:
+- Player disconnect
+- Host disconnect 
 """
 
-class Server:
+class Server(GameEngine, SendReceiveImage):
+
+    # Initital Function Starts Server & Game Lobby
     def __init__(self, port):
-        self.status = 'booting'
-        self.minPlayers = 1          # Minimum players on the server before the game can start
-        self.gameHost = False        # The game host
-        self.players = []            # All players that are currently on the server (Keeps on disconnect)
-        self.feedback = 0            # How many have gaven feedback to the server
-        self.memeImage = MemeImage() # Meme image (Not implemented)
+        super().__init__()
 
-        self.s = socket.socket()
+        # Start server
+        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = port
         self.s.bind((self.host, self.port))
+        print(socket.gethostname())
         print(self.s, 'Server is Running..')
         print('')
 
+        # Start game in lobby
+        self.status = 'inLobby'
+        self.feedback = 0
         self.run()
 
+    # Server Starts Listening for players joining the server
     def run(self):
         self.s.listen(5)
-        while True:
-            self.isGameReady()
-            self.imageScoreRequest()
+        while True: # While Listening
 
             # Server listens for players joining the server
             player = Player()
@@ -41,6 +40,9 @@ class Server:
             self.sendMessage(player, 'Thank you for connecting.', 'message')
             self.clientJoined(player)
 
+            self.gameRunning(self)
+
+    # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
         # Check if the user is already connected
         for player in self.players:
@@ -64,70 +66,44 @@ class Server:
 
         print('')
 
+    # Send message to specified player
     def sendMessage(self, player: Player, message: [str], key: str):
         # Send message to player
-        print('Sending:', message, 'to', player.getName())
+        if message == 'none' or type(message) != str:
+            print('Sending:', '"' + key + '"', 'to', player.getName())
+        else:
+            print('Sending:', '"' + message + '"', 'to', player.getName())
         message = json.dumps(message).encode()
-        # Packages the message with a matching key
-        package = {key: message}
-        # Send reply to server
-        player.c.send(pickle.dumps(package))
+        package = {key: message} # Packages the message with a matching key
+        player.c.send(pickle.dumps(package)) # Send reply to server
 
+    # Send data request/ Response to client
     def request(self, player: Player, message: [str], key: str) -> str:
-        print('Requesting:', key)
         self.sendMessage(player, message, key)
+        return self.listen(player, key)
 
+    # Listen for repsponse to data request
+    def listen(self, player: Player, key: str):
         # Listen for reply
         self.s.listen(5)
         print('Listening..')
         while True:
             # Getting a reply from the player
-            recive = player.c.recv(1024)
-            if recive:
-                package = pickle.loads(recive)
+            receive = player.c.recv(1024)
+            if receive is not None:
+                package = pickle.loads(receive)
                 clientMessage = package[key].decode()
                 print(player.getName(), 'sent:', key, '->', clientMessage)
-                self.feedback += 1
                 return clientMessage
 
-    def isGameReady(self) -> bool:
-        if self.minPlayers <= len(self.players) and self.host and self.status != 'playing':
-            print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            if self.request(self.getGameHost(), 'none', 'startGameRequest') == 'True':
-                self.startGame()
-        return False
-
-    def startGame(self):
-        print('START GAME!!')
-        self.status = 'imageTextRequest'
-        self.feedback = 0
-
-        # Send image to all players
-        for player in self.players:
-            self.sendMessage(player, 'Game has started!', 'message')
-            self.request(player, self.memeImage.image, 'imageTextRequest')
-
-    def imageScoreRequest(self):
-        if len(self.players) <= self.feedBack and self.status == 'imageTextRequest':
-            self.status = 'imageScoreRequest'
-            self.feedback = 0
-            # Request score from players
-            for player in self.players:
-                self.request(player, [self.memeImage.image], 'imageScoreRequest')
-
-    def makeMeme(self, memeImage: MemeImage, players: Player) -> [MemeImage]:
-        pass
-
-    def getScore(self, memeImage: MemeImage, players: Player) -> [int]:
-        for player in players:
-            self.request(player, 'scoreRequest', 'none')
-        pass
-
+    # Setter for game host role
     def setGameHost(self, player: Player):
         self.gameHost = player
 
+    # Getter for game host role
     def getGameHost(self) -> Player:
         return self.gameHost
 
+    # Server Close Function
     def kill(self):
         self.c.close()

@@ -1,12 +1,18 @@
-# Medialogi-02-PCSS
-3rd semester Medialogy PCSS project
+# Mini-project - Programming in Complext Software System (PCSS)
+3. semester Medialogi grp. 2
 
-Deadline: ??. ???ember 2021
+Deadline: Tuesday, 23 November 2021, 12:00 AM
 
 Group members:
-- Kristian
-- Sebastian
-- Rebecca
-- Tobias
-- Charlotte
-- Tonko
+- Charlotte (The bossy one)
+- Rebecca (The swaggy one)
+- Sebastian (The knighty one)
+- Tobias (The cooly one)
+- Tonko (The cutiy one)
+
+Kenned-Kasse!
+Make amazingly funny memes with your friends and pick the winner over them all!!1!
+
+- A Jack-box-(inspired) party game on computer
+- Using networking, multithreading, Python
+- Packages: Tinka, socket, pickle, json
