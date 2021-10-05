@@ -15,11 +15,10 @@ class Server(GameEngine, SendReceiveImage):
         super().__init__()
 
         # Start server
-        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = port
         self.s.bind((self.host, self.port))
-        print(socket.gethostname())
         print(self.s, 'Server is Running..')
         print('')
 
@@ -33,6 +32,7 @@ class Server(GameEngine, SendReceiveImage):
         self.s.listen(5)
         while True: # While Listening
 
+            print('Listening..')
             # Server listens for players joining the server
             player = Player()
             player.c, player.addr = self.s.accept()
@@ -41,6 +41,7 @@ class Server(GameEngine, SendReceiveImage):
             self.clientJoined(player)
 
             self.gameRunning(self)
+            print('Listening..')
 
     # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):

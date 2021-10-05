@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
-
+from program.Client import Client
 
 LARGEFONT = ("Verdana", 35)
 
@@ -9,7 +9,7 @@ players = 4
 player_names = ["Rebecca", "Charlotte", "Tonko", "Tobias"]
 
 
-class tkinterApp(tk.Tk):
+class tkinterApp(tk.Tk, Client):
 
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
@@ -49,8 +49,7 @@ class tkinterApp(tk.Tk):
 
 
 # Start game
-
-class StartPage(tk.Frame):
+class StartPage(tk.Frame, tkinterApp):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -64,34 +63,44 @@ class StartPage(tk.Frame):
         label = ttk.Label(self, text="Navn hmm?")
         label.grid(row=1, column=0, padx=10, pady=10)
 
-        #Name of player
+        # Name of player
         self.PName: Entry = tk.Entry(self)
         self.PName.grid(row=2, column=0, padx=10, pady=10)
-
 
         label = ttk.Label(self, text="IP hmm?")
         label.grid(row=3, column=0, padx=10, pady=10)
 
-        #IPhjmmm
+        # IPhjmmm
         self.IPName: Entry = tk.Entry(self)
         self.IPName.grid(row=4, column=0, padx=10, pady=10)
 
-        button1 = ttk.Button(self, text="Join Game", command= lambda: [controller.show_frame(Page1), self.fetchData()])
+        button1 = ttk.Button(self,
+                             text="Join Game",
+                             command=lambda: self.fetchStartPage(controller)
+                             )
         button1.grid(row=5, column=0, padx=10, pady=10)
 
-        meme = Image.open('UI/work.jpg')
+        meme = Image.open('work.jpg')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
         meme_lbl.grid(row=6, column=0, padx=10, pady=10)
 
-    def fetchData(self):
-        print(self.PName.get())
-        print(self.IPName.get())
+    # Connect to server button handle
+    def fetchStartPage(self, controller):
+        # Get written name in name input
+        name = self.PName.get()
+        # Get written IP in IP input
+        # (Does not do anything at the moment)
+        IP = self.IPName.get()
+        # Connect to server with name and IP
+        self.connectToServer(IP, name)
+        # Continue to page 1
+        controller.show_frame(Page1)
+
 
 # Where you wait for game to start
-class Page1(tk.Frame):
-
+class Page1(tk.Frame, tkinterApp):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="", font=LARGEFONT)
@@ -105,16 +114,20 @@ class Page1(tk.Frame):
         button1.place(relx=.5, rely=0.15, anchor="c")
 
         button2 = ttk.Button(self, text="Start Game",
-                             command=lambda: controller.show_frame(Page2))
+                             command=lambda: self.fetchPage1(controller))
         button2.place(relx=.5, rely=0.22, anchor="c")
 
-        meme = Image.open('UI/progmeme.png')
+        meme = Image.open('progmeme.png')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
         meme_lbl.place(relx=.5, rely=0.7, anchor="c")
 
+    # Start game button handle
+    def fetchPage1(self, controller):
 
+        # Continue to next page (page 2)
+        controller.show_frame(Page2)
 
 
 # Write funny haha meme text page
@@ -129,7 +142,7 @@ class Page2(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
-        meme = Image.open('UI/work.jpg')
+        meme = Image.open('work.jpg')
         w, h = meme.size
         if w > h:
             scale = w / h
@@ -149,15 +162,21 @@ class Page2(tk.Frame):
         self.MemeText: Entry = tk.Entry(self)
         self.MemeText.grid(row=2, column=1, padx=10, pady=10)
 
-
         button2 = ttk.Button(self, text="Submit",
-                             command=lambda: [controller.show_frame(Page3), self.fetchText()])
+                             command=lambda: self.fetchPage2(controller))
         button2.grid(row=3, column=1, padx=10, pady=10)
 
-    def fetchText(self):
-        print(self.MemeText.get())
+    # Submit text button handle
+    def fetchPage2(self, controller):
+        # Get written text input to image
+        userInputText = self.MemeText.get()
 
-# Voting screen leggoooo
+        # Continue to next page (Voting page)
+        controller.show_frame(Page3),
+
+    # Voting screen leggoooo
+
+
 class Page3(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -170,7 +189,7 @@ class Page3(tk.Frame):
 
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
-            meme = Image.open('UI/andreas.png')
+            meme = Image.open('andreas.png')
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
@@ -183,7 +202,7 @@ class Page3(tk.Frame):
                 meme_lbl = tk.Label(self, image=meme)
                 meme_lbl.image = meme
                 # Makes the images go into a grid
-                
+
                 if int(x / 2) == 0:
                     meme_lbl.grid(row=int(x / 2 + 1), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
@@ -192,9 +211,9 @@ class Page3(tk.Frame):
                 button1 = ttk.Button(self, text="Yass this queen",
                                      command=lambda: controller.show_frame(Page4))
                 # Makes the buttons fit with the images and go below them
-                if int(x/2) == 0:
+                if int(x / 2) == 0:
                     button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
-                if int(x/2) == 1:
+                if int(x / 2) == 1:
                     button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
             # If vertical - places all images in a line w a button
             elif w < h:
@@ -210,7 +229,6 @@ class Page3(tk.Frame):
                 button1 = ttk.Button(self, text="Yass this queen",
                                      command=lambda: controller.show_frame(Page4))
                 button1.grid(row=2, column=x, padx=10, pady=10)
-
 
 
 # Score screen
