@@ -19,9 +19,9 @@ class MemeImage:
     def getImage(self) -> str:
         return self.image
 
-# Test if the code works
-def testCode():
+def makeImageToMeme():
+    pass
+
+if __name__ == '__main__':
     memeImage = MemeImage()
     print(memeImage.getImage())
-
-#testCode()

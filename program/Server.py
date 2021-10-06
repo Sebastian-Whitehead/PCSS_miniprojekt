@@ -115,4 +115,4 @@ class Server(GameEngine, SendReceiveImage):
         self.c.close()
 
 if __name__ == '__main__':
-    Server()
+    Server(1024)

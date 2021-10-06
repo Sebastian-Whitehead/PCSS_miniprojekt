@@ -1,10 +1,11 @@
 import socket, pickle, json
 from program.SendReceiveImage import SendReceiveImage
+#from program.MemeImage import makeImageToMeme
 
 class Client(SendReceiveImage):
     # Initial setup
     def __init__(self):
-        self.gameReady = False
+        pass
 
     def connectToServer(self, IP, name):
         print('Connecting to server..')
@@ -29,8 +30,6 @@ class Client(SendReceiveImage):
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):
         print('Start game request received')
-
-        #doOnListen
 
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
     def imageTextRequst(self, serverKey: str):
