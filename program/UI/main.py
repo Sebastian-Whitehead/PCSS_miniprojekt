@@ -187,7 +187,8 @@ class Page3(tk.Frame):
         label = ttk.Label(self, text="---Voting Time---", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
-        memelist = ('UI/andreas.png','UI/andreas.png','UI/andreas.png','UI/andreas.png')
+        memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
+        buttonlist = ()
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
             meme = Image.open(memelist[x])
@@ -210,11 +211,13 @@ class Page3(tk.Frame):
 
                 button1 = ttk.Button(self, text="Yass this queen",
                                      command=lambda: controller.show_frame(Page4))
+
                 # Makes the buttons fit with the images and go below them
                 if int(x / 2) == 0:
                     button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
                     button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
+                buttonlist.append(button1)
             # If vertical - places all images in a line w a button
             elif w < h:
                 scale = h / w
@@ -229,6 +232,11 @@ class Page3(tk.Frame):
                 button1 = ttk.Button(self, text="Yass this queen",
                                      command=lambda: controller.show_frame(Page4))
                 button1.grid(row=2, column=x, padx=10, pady=10)
+                buttonlist.append(button1)
+
+    def buttoncheck(self):
+        if 
+
 
 
 # Score screen
