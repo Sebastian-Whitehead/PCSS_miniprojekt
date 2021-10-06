@@ -96,16 +96,17 @@ class StartPage(tk.Frame, tkinterApp):
         # (Does not do anything at the moment)
         IP = self.IPName.get()
         # Connect to server with name and IP
-        print(self.client)
         self.client.connectToServer(IP, name)
-        # Continue to page 1
+
+        # Continue to page 1 (In game lobby)
         controller.show_frame(Page1)
 
-        # Let the host listen for game start request
+        # Listen for the server to give new feedback
         serverKey = self.client.listen()
-
+        # The host will get a start game request
         if serverKey == 'startGameRequest':
             controller.show_frame(hostPage)
+        # All other players will wait the the game to start
         elif serverKey == 'imageTextRequest':
             controller.show_frame(Page2)
 
@@ -161,7 +162,7 @@ class hostPage(tk.Frame, tkinterApp):
         print('Starting game')
         # Tell server to start game
         self.client.sendMessage(key='startGameRequest', message='True')
-        # Continue to next page (page 2)
+        # Continue to page 2 (Text input page)
         controller.show_frame(Page2)
 
 # Write funny haha meme text page
@@ -206,7 +207,7 @@ class Page2(tk.Frame):
         # Get written text input to image
         userInputText = self.MemeText.get()
         self.client.sendMessage('imageTextRequest', userInputText)
-        # Continue to next page (Voting page)
+        # Continue to page 3 (Voting page)
         controller.show_frame(Page3)
 
     # Voting screen leggoooo
@@ -270,8 +271,15 @@ class Page3(tk.Frame):
                 button1.grid(row=2, column=x, padx=10, pady=10)
                 buttonlist.append(button1)
 
-        # Score to send to server (Set into button function)
+        """(Set into button function)===========
+        
+        # Score to send to server 
         #self.client.sendMessage('imageTextRequest', score)
+
+        # Go to page 4 (Score board)
+        #controller.show_frame(Page4)
+        
+        ===================================="""
 
 
 # Score screen
