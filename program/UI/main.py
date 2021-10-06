@@ -187,9 +187,10 @@ class Page3(tk.Frame):
         label = ttk.Label(self, text="---Voting Time---", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
+        memelist = ('UI/andreas.png','UI/andreas.png','UI/andreas.png','UI/andreas.png')
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
-            meme = Image.open('andreas.png')
+            meme = Image.open(memelist[x])
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
@@ -202,7 +203,6 @@ class Page3(tk.Frame):
                 meme_lbl = tk.Label(self, image=meme)
                 meme_lbl.image = meme
                 # Makes the images go into a grid
-
                 if int(x / 2) == 0:
                     meme_lbl.grid(row=int(x / 2 + 1), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
