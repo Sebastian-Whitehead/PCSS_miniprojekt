@@ -280,10 +280,13 @@ class Page3(tk.Frame):
                 #self.buttonlist.append(button1)
 
     def buttonCheck(self, button, controller):
-        print(button.value)
+        score = str(button.value)
+        print(score)
+        # Score to send to server
+        self.client.sendMessage('imageTextRequest', score)
+
+        # Go to page 4 (Score board)
         controller.show_frame(Page4)
-
-
 
 # Score screen
 class Page4(tk.Frame):
