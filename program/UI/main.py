@@ -252,8 +252,9 @@ class Page3(tk.Frame):
                 if int(x / 2) == 1:
                     meme_lbl.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
 
-                self.button1 = ttk.Button(self, text="Yass this queen",
-                                     command=lambda: [controller.show_frame(Page4), self.buttoncheck(x)])
+                button1 = ttk.Button(self, text="Yass queen " + str(x))
+                button1.value = x
+                button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
 
                 # Makes the buttons fit with the images and go below them
                 if int(x / 2) == 0:
@@ -273,16 +274,15 @@ class Page3(tk.Frame):
                 meme_lbl.image = meme
                 meme_lbl.grid(row=1, column=x, padx=10, pady=10)
 
-                button1 = ttk.Button(self, text="Yass this queen" + str(x))
+                button1 = ttk.Button(self, text="Yass queen " + str(x))
                 button1.value = x
                 button1.grid(row=2, column=x, padx=10, pady=10)
                 button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
                 #self.buttonlist.append(button1)
 
     def buttonCheck(self, button, controller):
-        score = str(button.value)
-        print(score)
         # Score to send to server
+        score = str(button.value)
         self.client.sendMessage('imageTextRequest', score)
 
         # Go to page 4 (Score board)
@@ -309,5 +309,5 @@ class Page4(tk.Frame):
         button1.grid(row=players + 2, column=1, padx=10, pady=10)
 
 # Driver Code
-app = tkinterApp()
-app.mainloop()
+if __name__ == '__main__':
+    tkinterApp().mainloop()
