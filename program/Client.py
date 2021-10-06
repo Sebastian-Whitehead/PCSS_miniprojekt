@@ -1,7 +1,6 @@
 import socket, pickle, json
 from program.SendReceiveImage import SendReceiveImage
 
-
 class Client(SendReceiveImage):
     # Initial setup
     def __init__(self):
@@ -13,7 +12,7 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = 1024
         self.s.connect((self.host, self.port))
-        self.listen('None')
+        self.listen()
         # self.sendMessage('nameRequest', name)
 
         # All images gotten from server made from other players
@@ -28,9 +27,10 @@ class Client(SendReceiveImage):
         self.sendMessage()
 
     # Request the game host to start the game
-    def startGameRequest(self, serverKey: str, doOnListen):
+    def startGameRequest(self, serverKey: str):
         print('Start game request received')
-        doOnListen
+
+        #doOnListen
 
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
     def imageTextRequst(self, serverKey: str):
@@ -69,7 +69,7 @@ class Client(SendReceiveImage):
         print('')
 
     # Listens for request or message from the server
-    def listen(self, doOnListen):
+    def listen(self):
         print('Listening..')
         while True:
             # Receiving a request or message
@@ -83,7 +83,7 @@ class Client(SendReceiveImage):
                 elif serverKey == 'nameRequest':
                     self.nameRequest(serverKey)
                 elif serverKey == 'startGameRequest':
-                    self.startGameRequest(serverKey, doOnListen)
+                    self.startGameRequest(serverKey)
                 elif serverKey == 'imageTextRequest':
                     self.imageTextRequst(serverKey)
                 elif serverKey == 'imageScoreRequest':
@@ -93,7 +93,7 @@ class Client(SendReceiveImage):
                 else:
                     # Error message to console, no key found
                     print('Unknown message from server..')
-                break
+                return serverKey
 
     # Prompt the player for a reply it can send to the server
     def promptReply(self, key: str, UIMessage: str):
@@ -101,6 +101,7 @@ class Client(SendReceiveImage):
         self.sendMessage(key, message)
 
     def sendMessage(self, key: str, message: str):
+        print('Sending', message, '->', key)
         package = {key: message.encode()}  # Packages the message with a matching key
         self.s.send(pickle.dumps(package))  # Send reply to server
         print('')

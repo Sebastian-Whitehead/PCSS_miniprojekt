@@ -42,6 +42,12 @@ class tkinterApp(tk.Tk):
 
         self.show_frame(StartPage)
 
+    def show_frame_hostPage(self):
+        self.show_frame(hostPage)
+
+    def show_frame_page1(self):
+        self.show_frame(Page1)
+
     # to display the current frame passed as
     # parameter
     def show_frame(self, cont):
@@ -101,8 +107,13 @@ class StartPage(tk.Frame, tkinterApp):
         # Continue to page 1
         controller.show_frame(Page1)
 
+        # Let the host listen for game start request
+        serverKey = self.client.listen()
 
-        self.client.listen(controller.show_frame(hostPage))
+        if serverKey == 'startGameRequest':
+            controller.show_frame(hostPage)
+        elif serverKey == 'imageTextRequest':
+            controller.show_frame(Page2)
 
 # Where you wait for game to start
 class Page1(tk.Frame, tkinterApp):
@@ -119,15 +130,13 @@ class Page1(tk.Frame, tkinterApp):
                              command=lambda: controller.show_frame(StartPage))
         button1.place(relx=.5, rely=0.15, anchor="c")
 
-        #button2 = ttk.Button(self, text="Start Game", command=lambda: self.fetchPage1(controller))
-        #button2.place(relx=.5, rely=0.22, anchor="c")
-
         meme = Image.open('progmeme.png')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
         meme_lbl.place(relx=.5, rely=0.7, anchor="c")
 
+# Host page to start the game
 class hostPage(tk.Frame, tkinterApp):
     def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
@@ -156,6 +165,7 @@ class hostPage(tk.Frame, tkinterApp):
     # Start game button handle
     def fetchPage1(self, controller):
         print('Starting game')
+        # Tell server to start game
         self.client.sendMessage(key='startGameRequest', message='True')
         # Continue to next page (page 2)
         controller.show_frame(Page2)
@@ -164,6 +174,7 @@ class hostPage(tk.Frame, tkinterApp):
 class Page2(tk.Frame):
     def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
+        self.client = client
 
         label = ttk.Label(self, text="", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
@@ -200,7 +211,7 @@ class Page2(tk.Frame):
     def fetchPage2(self, controller):
         # Get written text input to image
         userInputText = self.MemeText.get()
-
+        self.client.sendMessage('imageTextRequest', userInputText)
         # Continue to next page (Voting page)
         controller.show_frame(Page3)
 
@@ -210,6 +221,7 @@ class Page2(tk.Frame):
 class Page3(tk.Frame):
     def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
+        self.client = client
 
         label = ttk.Label(self, text="", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
@@ -264,6 +276,8 @@ class Page3(tk.Frame):
                 button1.grid(row=2, column=x, padx=10, pady=10)
                 buttonlist.append(button1)
 
+        # Score to send to server (Set into button function)
+        #self.client.sendMessage('imageTextRequest', score)
 
 
 # Score screen
@@ -285,7 +299,6 @@ class Page4(tk.Frame):
         button1 = ttk.Button(self, text="m'ka' goodnight",
                              command=lambda: controller.show_frame(StartPage))
         button1.grid(row=players + 2, column=1, padx=10, pady=10)
-
 
 # Driver Code
 app = tkinterApp()
