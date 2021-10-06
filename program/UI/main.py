@@ -103,17 +103,17 @@ class StartPage(tk.Frame, tkinterApp):
         # (Does not do anything at the moment)
         IP = self.IPName.get()
         # Connect to server with name and IP
-        print(self.client)
         self.client.connectToServer(IP, name)
         # Continue to page 1
         controller.show_frame(Page1)
 
-        # Let the host listen for game start request
+        # Listen for server
         serverKey = self.client.listen()
-
-        if serverKey == 'startGameRequest':
+        # Let the host listen for game start request
+        if serverKey[0] == 'startGameRequest':
             controller.show_frame(hostPage)
-        elif serverKey == 'imageTextRequest':
+        # Let all other players wait for the game to start
+        elif serverKey[0] == 'imageTextRequest':
             controller.show_frame(Page2)
 
 # Where you wait for game to start
@@ -212,9 +212,20 @@ class Page2(tk.Frame):
     def fetchPage2(self, controller):
         # Get written text input to image
         userInputText = self.MemeText.get()
+        # Send the text input to the server
         self.client.sendMessage('imageTextRequest', userInputText)
-        # Continue to next page (Voting page)
-        controller.show_frame(Page3)
+        #self.client.imageTextRequest('imageTextRequest', userInputText)
+
+        # Let the host listen for score giving state
+        # EKSTRA LISTEN DON NO WHY
+        serverKey = self.client.listen()
+        print(serverKey)
+        serverKey = self.client.listen()
+        if serverKey[0] == 'imageScoreRequest':
+            # DO SOMETHING WITH THESE GOODANMTN TEXTS!! MISSING
+            # Sebastian
+            imageTexts = serverKey[1]
+            controller.show_frame(Page3)
 
     # Voting screen leggoooo
 
@@ -238,6 +249,12 @@ class Page3(tk.Frame):
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
+
+            # Make the 'vote' button
+            button1 = ttk.Button(self, text="Yass queen " + str(x))
+            button1.value = x
+            button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
+
             if w > h:
                 scale = w / h
                 w = int(500)
@@ -246,21 +263,18 @@ class Page3(tk.Frame):
                 meme = ImageTk.PhotoImage(meme)
                 meme_lbl = tk.Label(self, image=meme)
                 meme_lbl.image = meme
+
                 # Makes the images go into a grid
                 if int(x / 2) == 0:
                     meme_lbl.grid(row=int(x / 2 + 1), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
                     meme_lbl.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
 
-                button1 = ttk.Button(self, text="Yass queen " + str(x))
-                button1.value = x
-                button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
-
                 # Makes the buttons fit with the images and go below them
                 if int(x / 2) == 0:
-                    self.button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
+                    button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
-                    self.button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
+                    button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
 
             # If vertical - places all images in a line w a button
             elif w < h:
@@ -274,17 +288,12 @@ class Page3(tk.Frame):
                 meme_lbl.image = meme
                 meme_lbl.grid(row=1, column=x, padx=10, pady=10)
 
-                button1 = ttk.Button(self, text="Yass queen " + str(x))
-                button1.value = x
                 button1.grid(row=2, column=x, padx=10, pady=10)
-                button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
-                #self.buttonlist.append(button1)
 
     def buttonCheck(self, button, controller):
         # Score to send to server
         score = str(button.value)
-        self.client.sendMessage('imageTextRequest', score)
-
+        self.client.sendMessage('imageScoreRequest', score)
         # Go to page 4 (Score board)
         controller.show_frame(Page4)
 

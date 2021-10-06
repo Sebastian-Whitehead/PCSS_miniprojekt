@@ -9,11 +9,20 @@ from MemeImage import MemeImage
 class GameEngine(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.players = []  # All players that are currently on the server (Keeps on disconnect)
-       # self.memeImage = MemeImage()  # Meme image (Not implemented)
+        # All players that are currently on the server (Keeps on disconnect)
+        self.players = []
+        # Meme image (Not implemented)
+        self.memeImage = MemeImage()
+        # Text from all players
+        self.texts = []
+        # Points given from all players
+        self.points = []
 
-        self.minPlayers = 1  # Minimum players on the server before the game can start
-        self.gameHost = False  # The game host
+        # Minimum players on the server before the game can start
+        self.minPlayers = 1
+        # The game host
+        self.gameHost = False
+        # Set state of program
         self.setStatus('booting')
 
     # Run the Game Engine on the server
@@ -29,8 +38,10 @@ class GameEngine(threading.Thread):
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
             gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
             if gameStart == 'True':
+                # Start the game
                 self.startGame(server)
             else:
+                # Keep listening for host
                 self.isGameReady(server)
         return False
 
@@ -42,38 +53,12 @@ class GameEngine(threading.Thread):
 
         # Send image to all players
         for player in self.players:
-            server.sendMessage(player, 'Game has started!', 'message')
-            print('')
-
+            # Request each player
             server.sendMessage(player, 'imageTextRequest', 'message')
-
-            threads = []
-
-            thread1 = threading.Thread(
-                target=server.sendImage,
-                args=(self.memeImage.image, player.c)
-            )
-
-            thread1.start()
-            threads.append(thread1)
-            thread1.join()
-
-            thread2 = threading.Thread(
-                target=server.listen,
-                args=(player, 'imageTextRequest')
-            )
-            thread2.start()
-            threads.append(thread2)
-
-            while thread2 is None:
-                print('No result')
-
-            thread2.join()
-
-            player.image = server.receiveImage(player.c)
-            if player.image != False:
-                self.feedback += 1
-
+            # Append the text to the list
+            self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
+            # Add feedback
+            self.feedback += 1
         print('')
 
     # Send all memes to all players
@@ -85,28 +70,12 @@ class GameEngine(threading.Thread):
 
             # Request score from players
             for pos, player in enumerate(self.players):
-                server.sendMessage(player, len(server.players), 'imageScoreRequest')
-                eachPlayer = 0
-                #while eachPlayer <= len(self.players) - 1:
-                for eachPlayer, image in enumerate(self.players):
-                    if self.players[eachPlayer].image != False:
-                        thread1 = threading.Thread(
-                            target=server.sendImage,
-                            args=(self.players[eachPlayer].image, player.c)
-                        )
-                        thread1.start()
-                        thread1.join()
-                        eachPlayer += 1
-
-                if len(self.players) - 1 <= pos:
-                    thread2 = threading.Thread(
-                        target=server.listen,
-                        args=(player, 'imageTextRequest')
-                    )
-                    thread2.start()
-                    thread2.join()
-                server.receiveImage(player.c)
-
+                # Request all players for a score
+                server.sendMessage(player, self.texts, 'imageScoreRequest')
+                # Append the score to list
+                self.points.append(server.listen(player, 'imageScoreRequest'))
+                # Add feedback to continue
+                self.feedback += 1
             print('')
 
     # Handle favorite memes and calculate a score
@@ -118,9 +87,8 @@ class GameEngine(threading.Thread):
 
             # Handling score
             print('Handling score..')
-
             """ CODE MISSING """
-
+            """   CHARLOTTE  """
             winner = "'pass'"
             print('')
 

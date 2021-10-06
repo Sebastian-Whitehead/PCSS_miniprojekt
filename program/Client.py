@@ -1,6 +1,8 @@
 import socket, pickle, json
 from program.SendReceiveImage import SendReceiveImage
-#from program.MemeImage import makeImageToMeme
+
+
+from program.MemeImage import makeImageToMeme
 
 class Client(SendReceiveImage):
     # Initial setup
@@ -13,26 +15,16 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = 1024
         self.s.connect((self.host, self.port))
-        self.listen()
-        # self.sendMessage('nameRequest', name)
-
-        # All images gotten from server made from other players
-        self.memes = []
 
         # Start listen for messages from the server
-        # self.listen()
-
-    # Request the game host to start the game
-    def nameRequest(self, serverKey: str):
-        print('Get name')
-        self.sendMessage()
+        self.listen()
 
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):
         print('Start game request received')
 
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
-    def imageTextRequst(self, serverKey: str):
+    def imageTextRequest(self, serverKey: str, imageText: str):
         # Receive and decrypt image
         frame_data = self.receiveImage(self.s)
         frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
@@ -41,13 +33,13 @@ class Client(SendReceiveImage):
         # cv2.waitKey(0)
 
         # Request player for text to put onto the image
-        imageText = input(serverKey, 'Type text to image')
+        #imageText = input(serverKey, 'Type text to image')
         if 0 < len(imageText):
             self.meme = makeImageToMeme(frame, imageText)  # Make meme using the text and image
             self.sendImage(self.meme, self.s)  # Send meme to server
 
     # Show all memes to the player and ask for a personal favorite
-    def imageScoreRequst(self, serverKey: str, serverMessage: str):
+    def imageScoreRequest(self, serverKey: str, serverMessage: str):
         # Receive all memes from the server
         for i in range(0, int(serverMessage) + 1):
             frame_data = self.receiveImage(self.s)
@@ -76,23 +68,10 @@ class Client(SendReceiveImage):
             package = pickle.loads(receive)
             serverKey = list(package)[0]
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
+
             if serverKey:
                 print(serverKey, '->', serverMessage)
-                if serverKey == 'accept': pass
-                elif serverKey == 'nameRequest':
-                    self.nameRequest(serverKey)
-                elif serverKey == 'startGameRequest':
-                    self.startGameRequest(serverKey)
-                elif serverKey == 'imageTextRequest':
-                    self.imageTextRequst(serverKey)
-                elif serverKey == 'imageScoreRequest':
-                    self.imageScoreRequst(serverKey, serverMessage)
-                elif serverKey == 'message':
-                    self.message(serverMessage)
-                else:
-                    # Error message to console, no key found
-                    print('Unknown message from server..')
-                return serverKey
+                return (serverKey, serverMessage)
 
     # Prompt the player for a reply it can send to the server
     def promptReply(self, key: str, UIMessage: str):
@@ -101,8 +80,10 @@ class Client(SendReceiveImage):
 
     def sendMessage(self, key: str, message: str):
         print('Sending', message, '->', key)
-        package = {key: message.encode()}  # Packages the message with a matching key
-        self.s.send(pickle.dumps(package))  # Send reply to server
+        # Packages the message with a matching key
+        package = {key: message.encode()}
+        # Send reply to server
+        self.s.send(pickle.dumps(package))
         print('')
 
     # Close Function

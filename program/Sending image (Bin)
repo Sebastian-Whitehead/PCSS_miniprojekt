@@ -1,0 +1,75 @@
+
+GameEngine
+    def startGame(self, server):
+"""
+threads = []
+
+thread1 = threading.Thread(
+    target=server.sendImage,
+    args=(self.memeImage.image, player.c)
+)
+
+thread1.start()
+threads.append(thread1)
+thread1.join()
+
+thread2 = threading.Thread(
+    target=server.listen,
+    args=(player, 'imageTextRequest')
+)
+thread2.start()
+threads.append(thread2)
+
+while thread2 is None:
+    print('No result')
+
+thread2.join()
+
+player.image = server.receiveImage(player.c)
+"""
+
+GameEngine
+def imageScoreRequest(self, server):
+"""
+server.sendMessage(player, len(server.players), 'imageScoreRequest')
+eachPlayer = 0
+#while eachPlayer <= len(self.players) - 1:
+for eachPlayer, image in enumerate(self.players):
+    if self.players[eachPlayer].image != False:
+        thread1 = threading.Thread(
+            target=server.sendImage,
+            args=(self.players[eachPlayer].image, player.c)
+        )
+        thread1.start()
+        thread1.join()
+        eachPlayer += 1
+
+if len(self.players) - 1 <= pos:
+    thread2 = threading.Thread(
+        target=server.listen,
+        args=(player, 'imageTextRequest')
+    )
+    thread2.start()
+    thread2.join()
+server.receiveImage(player.c)
+"""
+
+Client
+def listen(self):
+"""
+if serverKey == 'accept':
+    pass
+elif serverKey == 'nameRequest':
+    self.nameRequest(serverKey)
+elif serverKey == 'startGameRequest':
+    self.startGameRequest(serverKey)
+elif serverKey == 'imageTextRequest':
+    self.imageTextRequest(serverKey)
+elif serverKey == 'imageScoreRequest':
+    self.imageScoreRequest(serverKey, serverMessage)
+elif serverKey == 'message':
+    self.message(serverMessage)
+else:
+    # Error message to console, no key found
+    print('Unknown message from server..')
+    """
