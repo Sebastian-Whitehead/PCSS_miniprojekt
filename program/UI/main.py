@@ -9,12 +9,13 @@ players = 4
 player_names = ["Rebecca", "Charlotte", "Tonko", "Tobias"]
 
 
-class tkinterApp(tk.Tk, Client):
+class tkinterApp(tk.Tk):
 
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
+        self.client = Client()
 
         # creating a container
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
@@ -29,8 +30,8 @@ class tkinterApp(tk.Tk, Client):
 
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (StartPage, Page1, Page2, Page3, Page4):
-            frame = F(container, self)
+        for F in (StartPage, Page1, Page2, Page3, Page4, hostPage):
+            frame = F(container, self, client=self.client)
 
             # initializing frame of that object from
             # startpage, page1, page2, page3, and page4 respectively with
@@ -46,12 +47,13 @@ class tkinterApp(tk.Tk, Client):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
+        print('Showing frame', cont)
 
 # Start game
 class StartPage(tk.Frame, tkinterApp):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
+        self.client = client
 
         # Adding labels, buttons, and pics c:
         label = ttk.Label(self, text="", font=LARGEFONT)
@@ -70,7 +72,7 @@ class StartPage(tk.Frame, tkinterApp):
         label = ttk.Label(self, text="IP hmm?")
         label.grid(row=3, column=0, padx=10, pady=10)
 
-        # IPhjmmm
+        # IP
         self.IPName: Entry = tk.Entry(self)
         self.IPName.grid(row=4, column=0, padx=10, pady=10)
 
@@ -94,19 +96,47 @@ class StartPage(tk.Frame, tkinterApp):
         # (Does not do anything at the moment)
         IP = self.IPName.get()
         # Connect to server with name and IP
-        self.connectToServer(IP, name)
+        print(self.client)
+        self.client.connectToServer(IP, name)
         # Continue to page 1
         controller.show_frame(Page1)
 
 
+        self.client.listen(controller.show_frame(hostPage))
+
 # Where you wait for game to start
 class Page1(tk.Frame, tkinterApp):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
+
         label = ttk.Label(self, text="", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
         label = ttk.Label(self, text="Venter på start", font=LARGEFONT)
+        label.place(relx=.5, rely=0.05, anchor="c")
+
+        button1 = ttk.Button(self, text="Return to start",
+                             command=lambda: controller.show_frame(StartPage))
+        button1.place(relx=.5, rely=0.15, anchor="c")
+
+        #button2 = ttk.Button(self, text="Start Game", command=lambda: self.fetchPage1(controller))
+        #button2.place(relx=.5, rely=0.22, anchor="c")
+
+        meme = Image.open('progmeme.png')
+        meme = ImageTk.PhotoImage(meme)
+        meme_lbl = tk.Label(self, image=meme)
+        meme_lbl.image = meme
+        meme_lbl.place(relx=.5, rely=0.7, anchor="c")
+
+class hostPage(tk.Frame, tkinterApp):
+    def __init__(self, parent, controller, client):
+        tk.Frame.__init__(self, parent)
+        self.client = client
+
+        label = ttk.Label(self, text="", font=LARGEFONT)
+        label.grid(row=0, column=1, padx=10, pady=10)
+
+        label = ttk.Label(self, text="Ready to start", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
         button1 = ttk.Button(self, text="Return to start",
@@ -125,14 +155,14 @@ class Page1(tk.Frame, tkinterApp):
 
     # Start game button handle
     def fetchPage1(self, controller):
-
+        print('Starting game')
+        self.client.sendMessage(key='startGameRequest', message='True')
         # Continue to next page (page 2)
         controller.show_frame(Page2)
 
-
 # Write funny haha meme text page
 class Page2(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
 
         label = ttk.Label(self, text="", font=LARGEFONT)
@@ -172,13 +202,13 @@ class Page2(tk.Frame):
         userInputText = self.MemeText.get()
 
         # Continue to next page (Voting page)
-        controller.show_frame(Page3),
+        controller.show_frame(Page3)
 
     # Voting screen leggoooo
 
 
 class Page3(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
 
         label = ttk.Label(self, text="", font=LARGEFONT)
@@ -188,7 +218,7 @@ class Page3(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
-        buttonlist = ()
+        buttonlist = []
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
             meme = Image.open(memelist[x])
@@ -239,7 +269,7 @@ class Page3(tk.Frame):
 # Score screen
 class Page4(tk.Frame):
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)

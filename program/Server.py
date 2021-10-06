@@ -62,7 +62,7 @@ class Server(GameEngine, SendReceiveImage):
 
         # Confirm player with a message
         message = 'Hi, ' + newPlayer.getName() + '!'
-        self.sendMessage(newPlayer, message, 'message')
+        #self.sendMessage(newPlayer, message, 'message')
 
         # Set player to be game host if none
         if not self.getGameHost():

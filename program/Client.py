@@ -13,27 +13,24 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = 1024
         self.s.connect((self.host, self.port))
-        #self.listen('None')
-        #self.sendMessage('nameRequest', name)
+        self.listen('None')
+        # self.sendMessage('nameRequest', name)
 
         # All images gotten from server made from other players
         self.memes = []
 
         # Start listen for messages from the server
-        #self.listen()
+        # self.listen()
 
     # Request the game host to start the game
     def nameRequest(self, serverKey: str):
         print('Get name')
         self.sendMessage()
-        pass  # self.promptReply
 
     # Request the game host to start the game
-    def startGameRequest(self, serverKey: str):
+    def startGameRequest(self, serverKey: str, doOnListen):
         print('Start game request received')
-        # PROBLEM HERE: CAN NOT TELL THE UI TO SHOW BUTTON TO START THE GAME WHEN REVECING START REQUEST
-
-        pass  # self.promptReply(serverKey, 'Enough players to start the game. Type "True" to start the game')
+        doOnListen
 
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
     def imageTextRequst(self, serverKey: str):
@@ -82,16 +79,11 @@ class Client(SendReceiveImage):
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
             if serverKey:
                 print(serverKey, '->', serverMessage)
-                if serverKey == 'accept':
-                    doOnListen
-                    #self.listen(doOnListen)
+                if serverKey == 'accept': pass
                 elif serverKey == 'nameRequest':
                     self.nameRequest(serverKey)
                 elif serverKey == 'startGameRequest':
-                    #self.startGameRequest(serverKey)
-                    print('Start game request received')
-                    self.gameReady = True
-                    doOnListen
+                    self.startGameRequest(serverKey, doOnListen)
                 elif serverKey == 'imageTextRequest':
                     self.imageTextRequst(serverKey)
                 elif serverKey == 'imageScoreRequest':
@@ -102,7 +94,6 @@ class Client(SendReceiveImage):
                     # Error message to console, no key found
                     print('Unknown message from server..')
                 break
-
 
     # Prompt the player for a reply it can send to the server
     def promptReply(self, key: str, UIMessage: str):
@@ -117,6 +108,7 @@ class Client(SendReceiveImage):
     # Close Function
     def kill(self):
         self.s.close()
+
 
 if __name__ == '__main__':
     Client()
