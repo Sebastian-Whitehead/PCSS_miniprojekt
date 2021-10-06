@@ -230,7 +230,7 @@ class Page3(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
-        buttonlist = []
+
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
             meme = Image.open(memelist[x])
@@ -252,7 +252,7 @@ class Page3(tk.Frame):
                     meme_lbl.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
 
                 button1 = ttk.Button(self, text="Yass this queen",
-                                     command=lambda: controller.show_frame(Page4))
+                                     command=lambda: [controller.show_frame(Page4), self.buttoncheck(x)])
 
                 # Makes the buttons fit with the images and go below them
                 if int(x / 2) == 0:
@@ -272,12 +272,14 @@ class Page3(tk.Frame):
                 meme_lbl.grid(row=1, column=x, padx=10, pady=10)
 
                 button1 = ttk.Button(self, text="Yass this queen",
-                                     command=lambda: controller.show_frame(Page4))
+                                     command=lambda: [controller.show_frame(Page4), self.buttoncheck(x)])
                 button1.grid(row=2, column=x, padx=10, pady=10)
-                buttonlist.append(button1)
 
         # Score to send to server (Set into button function)
         #self.client.sendMessage('imageTextRequest', score)
+    def buttoncheck(self, int):
+        print(int)
+
 
 
 # Score screen
