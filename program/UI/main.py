@@ -3,6 +3,7 @@ from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from program.Client import Client
 
+
 LARGEFONT = ("Verdana", 35)
 
 players = 4
@@ -251,17 +252,18 @@ class Page3(tk.Frame):
                 if int(x / 2) == 1:
                     meme_lbl.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
 
-                button1 = ttk.Button(self, text="Yass this queen",
+                self.button1 = ttk.Button(self, text="Yass this queen",
                                      command=lambda: [controller.show_frame(Page4), self.buttoncheck(x)])
 
                 # Makes the buttons fit with the images and go below them
                 if int(x / 2) == 0:
-                    button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
+                    self.button1.grid(row=int(x / 2 + 2), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
-                    button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
-                buttonlist.append(button1)
+                    self.button1.grid(row=int(x / 2 + 4), column=x % 2 + 1, padx=10, pady=10)
+
             # If vertical - places all images in a line w a button
             elif w < h:
+
                 scale = h / w
                 h = int(450)
                 w = int(h / scale)
@@ -271,14 +273,15 @@ class Page3(tk.Frame):
                 meme_lbl.image = meme
                 meme_lbl.grid(row=1, column=x, padx=10, pady=10)
 
-                button1 = ttk.Button(self, text="Yass this queen",
-                                     command=lambda: [controller.show_frame(Page4), self.buttoncheck(x)])
+                button1 = ttk.Button(self, text="Yass this queen" + str(x))
+                button1.value = x
                 button1.grid(row=2, column=x, padx=10, pady=10)
+                button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
+                #self.buttonlist.append(button1)
 
-        # Score to send to server (Set into button function)
-        #self.client.sendMessage('imageTextRequest', score)
-    def buttoncheck(self, int):
-        print(int)
+    def buttonCheck(self, button, controller):
+        print(button.value)
+        controller.show_frame(Page4)
 
 
 
