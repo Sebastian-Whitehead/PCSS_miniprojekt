@@ -2,6 +2,8 @@
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import threading
+import time
 
 CurrentImgPath = "car.png"
 memeText = "This is a test string to test weather or not the splitting function works"
@@ -69,14 +71,18 @@ def edit_image(input_path, player_id, input_text):
         # img.show()
 
         # Save the edited image
-        img.save(f"./playerImages/{playerID}-{input_path}")
+        img.save(f"Image Saved = ./playerImages/{player_id}-{input_path}")
+        print(f"Image Saved = ./playerImages/{player_id}-{input_path}")
 
 # Retrieves the path of a submitted image
 def retrieve_PI_path(imageToRetrieve, playerID):
     img = f"./playerImages/{playerID}-{imageToRetrieve}"
     return img
 
+threading.Thread(target= edit_image, args=(CurrentImgPath, 1, "short meme text")).start()
+threading.Thread(target= edit_image, args=(CurrentImgPath, 2, "This is a longer meme text to testing weather the line splitting function still works")).start()
 
-edit_image(CurrentImgPath, playerID, memeText)
-print(retrieve_PI_path(CurrentImgPath, playerID))
+
+
+
 
