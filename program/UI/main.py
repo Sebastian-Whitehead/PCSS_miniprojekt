@@ -234,9 +234,6 @@ class Page3(tk.Frame):
                 button1.grid(row=2, column=x, padx=10, pady=10)
                 buttonlist.append(button1)
 
-    def buttoncheck(self):
-        if 
-
 
 
 # Score screen
