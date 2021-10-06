@@ -30,18 +30,18 @@ class Server(GameEngine, SendReceiveImage):
     # Server Starts Listening for players joining the server
     def run(self):
         self.s.listen(5)
+        print('Listening..')
+
         while True: # While Listening
 
-            print('Listening..')
             # Server listens for players joining the server
             player = Player()
             player.c, player.addr = self.s.accept()
             print('Got connection from:', player.addr)
-            self.sendMessage(player, 'Thank you for connecting.', 'message')
+            self.sendMessage(player, 'Thank you for connecting.', 'accept')
             self.clientJoined(player)
 
             self.gameRunning(self)
-            print('Listening..')
 
     # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
@@ -50,9 +50,13 @@ class Server(GameEngine, SendReceiveImage):
             if newPlayer.addr == player.addr:
                 return print('Old player')
 
+        """
         # Request the name of the player
         name = self.request(newPlayer, 'none', 'nameRequest')
         newPlayer.setName(name)
+        """
+
+        # Add new player
         self.players.append(newPlayer)
         print('New player')
 
@@ -93,6 +97,7 @@ class Server(GameEngine, SendReceiveImage):
             receive = player.c.recv(1024)
             if receive is not None:
                 package = pickle.loads(receive)
+                print(package)
                 clientMessage = package[key].decode()
                 print(player.getName(), 'sent:', key, '->', clientMessage)
                 return clientMessage
@@ -108,3 +113,6 @@ class Server(GameEngine, SendReceiveImage):
     # Server Close Function
     def kill(self):
         self.c.close()
+
+if __name__ == '__main__':
+    Server()
