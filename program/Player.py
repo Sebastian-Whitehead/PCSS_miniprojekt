@@ -8,7 +8,7 @@ class Player():
     def __init__(self):
         #threading.Thread.__init__(self)
         self.name = 'None yet'
-        self.ID = Player.size
+        self.ID = str(Player.size)
         Player.size += 1
 
     # Setter for player name
@@ -17,4 +17,8 @@ class Player():
 
     # Getter for player name
     def getName(self) -> str:
-        return self.name
+        return 'Player ' + self.ID
+
+
+if __name__ == '__main__':
+    Player()

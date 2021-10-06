@@ -95,9 +95,16 @@ class StartPage(tk.Frame, tkinterApp):
         IP = self.IPName.get()
         # Connect to server with name and IP
         self.connectToServer(IP, name)
-        # Continue to page 1
-        controller.show_frame(Page1)
+        self.listen(controller.show_frame(Page1))
 
+        # Continue to page 1
+
+
+        self.listen(controller.show_frame(Page1))
+        #self.listen(controller.show_frame(Page1))
+
+    def do(self):
+        self.button2.place(relx=.5, rely=0.22, anchor="c")
 
 # Where you wait for game to start
 class Page1(tk.Frame, tkinterApp):
@@ -113,15 +120,21 @@ class Page1(tk.Frame, tkinterApp):
                              command=lambda: controller.show_frame(StartPage))
         button1.place(relx=.5, rely=0.15, anchor="c")
 
-        button2 = ttk.Button(self, text="Start Game",
-                             command=lambda: self.fetchPage1(controller))
-        button2.place(relx=.5, rely=0.22, anchor="c")
+        if hasattr(self, 'gameReady'):
+            self.button2 = ttk.Button(self, text="Start Game",
+                                 command=lambda: self.fetchPage1(controller))
+            self.button2.place(relx=.5, rely=0.22, anchor="c")
+            #self.button2.pack_forget()
 
         meme = Image.open('progmeme.png')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
         meme_lbl.place(relx=.5, rely=0.7, anchor="c")
+
+
+
+
 
     # Start game button handle
     def fetchPage1(self, controller):
@@ -187,10 +200,9 @@ class Page3(tk.Frame):
         label = ttk.Label(self, text="---Voting Time---", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
-        memelist = ('UI/andreas.png','UI/andreas.png','UI/andreas.png','UI/andreas.png')
         # For loop that shows funny memes, only shows equal to amount of players
         for x in range(players):
-            meme = Image.open(memelist[x])
+            meme = Image.open('andreas.png')
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
@@ -203,6 +215,7 @@ class Page3(tk.Frame):
                 meme_lbl = tk.Label(self, image=meme)
                 meme_lbl.image = meme
                 # Makes the images go into a grid
+
                 if int(x / 2) == 0:
                     meme_lbl.grid(row=int(x / 2 + 1), column=x % 2 + 1, padx=10, pady=10)
                 if int(x / 2) == 1:
@@ -253,5 +266,5 @@ class Page4(tk.Frame):
 
 
 # Driver Code
-app = tkinterApp()
-app.mainloop()
+if __name__ == '__main__':
+    tkinterApp().mainloop()

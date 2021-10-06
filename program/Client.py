@@ -5,7 +5,7 @@ from program.SendReceiveImage import SendReceiveImage
 class Client(SendReceiveImage):
     # Initial setup
     def __init__(self):
-        pass
+        self.gameReady = False
 
     def connectToServer(self, IP, name):
         print('Connecting to server..')
@@ -13,13 +13,20 @@ class Client(SendReceiveImage):
         self.host = socket.gethostname()
         self.port = 1024
         self.s.connect((self.host, self.port))
-        self.sendMessage('nameRequest', name)
+        #self.listen('None')
+        #self.sendMessage('nameRequest', name)
 
         # All images gotten from server made from other players
         self.memes = []
 
         # Start listen for messages from the server
-        self.listen()
+        #self.listen()
+
+    # Request the game host to start the game
+    def nameRequest(self, serverKey: str):
+        print('Get name')
+        self.sendMessage()
+        pass  # self.promptReply
 
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):
@@ -65,7 +72,7 @@ class Client(SendReceiveImage):
         print('')
 
     # Listens for request or message from the server
-    def listen(self):
+    def listen(self, doOnListen):
         print('Listening..')
         while True:
             # Receiving a request or message
@@ -74,10 +81,17 @@ class Client(SendReceiveImage):
             serverKey = list(package)[0]
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
             if serverKey:
-                if serverKey == 'nameRequest':
-                    self.nameRequst(serverKey)
+                print(serverKey, '->', serverMessage)
+                if serverKey == 'accept':
+                    doOnListen
+                    #self.listen(doOnListen)
+                elif serverKey == 'nameRequest':
+                    self.nameRequest(serverKey)
                 elif serverKey == 'startGameRequest':
-                    self.startGameRequest(serverKey)
+                    #self.startGameRequest(serverKey)
+                    print('Start game request received')
+                    self.gameReady = True
+                    doOnListen
                 elif serverKey == 'imageTextRequest':
                     self.imageTextRequst(serverKey)
                 elif serverKey == 'imageScoreRequest':
@@ -88,6 +102,7 @@ class Client(SendReceiveImage):
                     # Error message to console, no key found
                     print('Unknown message from server..')
                 break
+
 
     # Prompt the player for a reply it can send to the server
     def promptReply(self, key: str, UIMessage: str):
@@ -103,4 +118,5 @@ class Client(SendReceiveImage):
     def kill(self):
         self.s.close()
 
-# client = Client()
+if __name__ == '__main__':
+    Client()
