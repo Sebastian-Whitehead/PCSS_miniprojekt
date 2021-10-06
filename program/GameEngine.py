@@ -18,6 +18,7 @@ class GameEngine(threading.Thread):
 
     # Run the Game Engine on the server
     def gameRunning(self, server):
+        print('Game running..')
         self.isGameReady(server)
         self.imageScoreRequest(server)
         self.handlingScore(server)
@@ -142,3 +143,7 @@ class GameEngine(threading.Thread):
         self.status = status
         self.feedback = 0
         return True
+
+
+if __name__ == '__main__':
+    GameEngine()
