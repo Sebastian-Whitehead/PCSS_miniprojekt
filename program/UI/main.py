@@ -42,12 +42,6 @@ class tkinterApp(tk.Tk):
 
         self.show_frame(StartPage)
 
-    def show_frame_hostPage(self):
-        self.show_frame(hostPage)
-
-    def show_frame_page1(self):
-        self.show_frame(Page1)
-
     # to display the current frame passed as
     # parameter
     def show_frame(self, cont):
