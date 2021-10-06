@@ -1,7 +1,5 @@
 import socket, pickle, json
 from program.SendReceiveImage import SendReceiveImage
-
-
 from program.MemeImage import makeImageToMeme
 
 class Client(SendReceiveImage):
@@ -9,6 +7,7 @@ class Client(SendReceiveImage):
     def __init__(self):
         pass
 
+    # Connect the client to the server
     def connectToServer(self, IP, name):
         print('Connecting to server..')
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,6 +23,7 @@ class Client(SendReceiveImage):
         print('Start game request received')
 
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
+    # NOT USED
     def imageTextRequest(self, serverKey: str, imageText: str):
         # Receive and decrypt image
         frame_data = self.receiveImage(self.s)
@@ -33,12 +33,13 @@ class Client(SendReceiveImage):
         # cv2.waitKey(0)
 
         # Request player for text to put onto the image
-        #imageText = input(serverKey, 'Type text to image')
+        # imageText = input(serverKey, 'Type text to image')
         if 0 < len(imageText):
             self.meme = makeImageToMeme(frame, imageText)  # Make meme using the text and image
             self.sendImage(self.meme, self.s)  # Send meme to server
 
     # Show all memes to the player and ask for a personal favorite
+    # NOT USED
     def imageScoreRequest(self, serverKey: str, serverMessage: str):
         # Receive all memes from the server
         for i in range(0, int(serverMessage) + 1):
@@ -55,29 +56,38 @@ class Client(SendReceiveImage):
         self.promptReply(serverKey, 'Type in the number of the best meme')
 
     # Show message to player
+    # NOT USED
     def message(self, serverMessage: str):
         print(serverMessage)
         print('')
 
     # Listens for request or message from the server
-    def listen(self):
+    def listen(self) -> tuple:
         print('Listening..')
         while True:
             # Receiving a request or message
             receive = self.s.recv(1024)
+            # Loack package using pickle
             package = pickle.loads(receive)
+            # Get the key from the package
             serverKey = list(package)[0]
+            # Get the message from the package using json and decode
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
 
             if serverKey:
                 print(serverKey, '->', serverMessage)
+                # Return key and message tuple
                 return (serverKey, serverMessage)
 
     # Prompt the player for a reply it can send to the server
+    # NOT USED
     def promptReply(self, key: str, UIMessage: str):
-        message = input(UIMessage + ': ')  # Prompts the user for a reply
+        # Prompts the user for a reply
+        message = input(UIMessage + ': ')
+        # Send key and message to the server
         self.sendMessage(key, message)
 
+    # Send message to the server with a matching key
     def sendMessage(self, key: str, message: str):
         print('Sending', message, '->', key)
         # Packages the message with a matching key

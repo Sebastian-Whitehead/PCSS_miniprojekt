@@ -6,6 +6,8 @@ from MemeImage import MemeImage
 # Will continue to next step of the game, when Feedback
   is equal to amount of players in the game
 """
+
+
 class GameEngine(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
