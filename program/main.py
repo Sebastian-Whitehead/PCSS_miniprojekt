@@ -6,8 +6,6 @@ import threading
 import time
 
 CurrentImgPath = "car.png"
-memeText = "This is a test string to test weather or not the splitting function works"
-playerID = 302
 
 
 # Splits longer strings in to two lines
@@ -75,8 +73,8 @@ def edit_image(input_path, player_id, input_text):
         print(f"Image Saved = ./playerImages/{player_id}-{input_path}")
 
 # Retrieves the path of a submitted image
-def retrieve_PI_path(imageToRetrieve, playerID):
-    img = f"./playerImages/{playerID}-{imageToRetrieve}"
+def retrieve_PI_path(imageToRetrieve, player_id):
+    img = f"./playerImages/{player_id}-{imageToRetrieve}"
     return img
 
 threading.Thread(target= edit_image, args=(CurrentImgPath, 1, "short meme text")).start()
