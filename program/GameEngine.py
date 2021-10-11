@@ -56,7 +56,8 @@ class GameEngine(threading.Thread):
         # Send image to all players
         for player in self.players:
             # Request each player
-            server.sendMessage(player, 'imageTextRequest', 'message')
+            print()
+            server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
             # Append the text to the list
             self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
             # Add feedback

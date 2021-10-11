@@ -1,11 +1,16 @@
 import socket, pickle, json
 from program.SendReceiveImage import SendReceiveImage
-from program.MemeImage import makeImageToMeme
+#from program.MemeImage import makeImageToMeme
 
 class Client(SendReceiveImage):
+
+
     # Initial setup
     def __init__(self):
-        pass
+
+        self.texts = []
+        self.memeImage = 'work.jpg'
+        self.memelist = ['work.jpg']
 
     # Connect the client to the server
     def connectToServer(self, IP, name):

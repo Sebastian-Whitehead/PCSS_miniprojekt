@@ -1,8 +1,9 @@
+import threading
 import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from program.Client import Client
-
+from program.MemeImage import *
 
 LARGEFONT = ("Verdana", 35)
 
@@ -168,6 +169,8 @@ class hostPage(tk.Frame, tkinterApp):
         print('Starting game')
         # Tell server to start game
         self.client.sendMessage(key='startGameRequest', message='True')
+        serverKey = self.client.listen()
+        self.client.memeImage = serverKey[1]
         # Continue to next page (page 2)
         controller.show_frame(Page2)
 
@@ -184,7 +187,7 @@ class Page2(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
-        meme = Image.open('work.jpg')
+        meme = Image.open(self.client.memeImage)
         w, h = meme.size
         if w > h:
             scale = w / h
@@ -214,17 +217,18 @@ class Page2(tk.Frame):
         userInputText = self.MemeText.get()
         # Send the text input to the server
         self.client.sendMessage('imageTextRequest', userInputText)
-        #self.client.imageTextRequest('imageTextRequest', userInputText)
 
         # Let the host listen for score giving state
         # EKSTRA LISTEN DON NO WHY
-        serverKey = self.client.listen()
-        print(serverKey)
+        #serverKey = self.client.listen()
+        #print(serverKey)
         serverKey = self.client.listen()
         if serverKey[0] == 'imageScoreRequest':
-            # DO SOMETHING WITH THESE GOODANMTN TEXTS!! MISSING
-            # Sebastian
             imageTexts = serverKey[1]
+            for text in imageTexts:
+                memeImage = threading.Thread(target=edit_image, args=(self.client.memeImage, text[:1], text[2:])).start()
+                self.client.memelist.append(memeImage)
+
             controller.show_frame(Page3)
 
     # Voting screen leggoooo
@@ -241,11 +245,12 @@ class Page3(tk.Frame):
         label = ttk.Label(self, text="---Voting Time---", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
-        memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
+        #memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
+        memelist = self.client.memelist
 
         # For loop that shows funny memes, only shows equal to amount of players
-        for x in range(players):
-            meme = Image.open(memelist[x])
+        for x, meme in enumerate(memelist):
+            meme = Image.open(meme)
             w, h = meme.size
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
