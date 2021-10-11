@@ -2,8 +2,8 @@ import threading
 import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
-from program.Client import Client
-from program.MemeImage import *
+from Client import Client
+from edit_image import edit_image
 
 LARGEFONT = ("Verdana", 35)
 
@@ -224,8 +224,11 @@ class Page2(tk.Frame):
         #print(serverKey)
         serverKey = self.client.listen()
         if serverKey[0] == 'imageScoreRequest':
+            # Get all players texts
             imageTexts = serverKey[1]
+            # Make meme for each text input into the image
             for text in imageTexts:
+                # Call threads on edit_image function
                 memeImage = threading.Thread(target=edit_image, args=(self.client.memeImage, text[:1], text[2:])).start()
                 self.client.memelist.append(memeImage)
 
