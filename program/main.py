@@ -6,6 +6,8 @@ import threading
 import time
 
 CurrentImgPath = "car.png"
+Font = 'ComicSansMS3.ttf'
+TextSize = 25
 
 
 # Splits longer strings in to two lines
@@ -41,9 +43,9 @@ def split_string (input_text, img, font):
 # Edit imput text onto image
 def edit_image(input_path, player_id, input_text):
 
-    img = Image.open(f'./Images/{input_path}') # Open an Image
+    img = Image.open(f'./images/{input_path}') # Open an Image
     I1 = ImageDraw.Draw(img) # Call draw Method to add 2D graphics in an image
-    myFont = ImageFont.truetype('ComicSansMS3.ttf', 25) # Custom font style and font size
+    myFont = ImageFont.truetype(Font, TextSize) # Custom font style and font size
 
     if img.size[0]*2 < myFont.getsize(input_text)[0]:
         print("to much text!")
@@ -55,7 +57,7 @@ def edit_image(input_path, player_id, input_text):
         textX = img.size[0] / 2 - myFont.getsize(input_text0)[0] / 2
         textY = img.size[1] - myFont.getsize(input_text0)[1] - 10
 
-        I1.text((textX, textY), input_text0, font=myFont, fill=(255, 150, 60))
+        I1.text((textX, textY), input_text0, font=myFont, fill=(0, 0, 0))
 
         # If there is text in teh second line
         if len(input_text1) > 0:
@@ -63,13 +65,13 @@ def edit_image(input_path, player_id, input_text):
             textX = img.size[0]/2 - myFont.getsize(input_text1)[0]/2
             textY -= myFont.getsize(input_text1)[1] - 5
 
-            I1.text((textX, textY), input_text1, font=myFont, fill=(60, 150, 255))
+            I1.text((textX, textY), input_text1, font=myFont, fill=(0, 0, 0))
 
         # preview image
         # img.show()
 
         # Save the edited image
-        img.save(f"Image Saved = ./playerImages/{player_id}-{input_path}")
+        img.save(f"./playerImages/{player_id}-{input_path}")
         print(f"Image Saved = ./playerImages/{player_id}-{input_path}")
 
 # Retrieves the path of a submitted image
