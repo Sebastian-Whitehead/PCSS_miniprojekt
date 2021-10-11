@@ -10,7 +10,8 @@ class Client(SendReceiveImage):
 
         self.texts = []
         self.memeImage = 'work.jpg'
-        self.memelist = ['work.jpg']
+        self.memelist = []
+        self.winner = -1
 
     # Connect the client to the server
     def connectToServer(self, IP, name):

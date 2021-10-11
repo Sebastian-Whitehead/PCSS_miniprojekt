@@ -1,3 +1,9 @@
+def countPoints(scores: [int], n: int) -> [int]:
+    points = []
+    for n in range(n):
+        points.append(scores.count(n))
+    return points
+
 def bubble_sort(scores):
     #den kigger på de 2 første, finder den højeste værdi og sætter den øverst. Kigger på 2 og 3 og finder den højeste, og til sidst 3 og 4
 
@@ -15,3 +21,11 @@ def bubble_sort(scores):
         if flag == 0:
             break
     return scores
+
+
+if __name__ == '__main__':
+    scores = [0, 2, 3, 2, 1, 0, 1, 3, 1, 1, 1, 2]
+    points = countPoints(scores)
+    print(points)
+    sortedPoints = bubble_sort(points)
+    print(sortedPoints)

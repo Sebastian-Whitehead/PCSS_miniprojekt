@@ -1,5 +1,6 @@
 import threading
 from MemeImage import MemeImage
+from Bubble_sort import *
 
 """
 # Game engine for the game, keeping track of each step
@@ -76,7 +77,7 @@ class GameEngine(threading.Thread):
                 # Request all players for a score
                 server.sendMessage(player, self.texts, 'imageScoreRequest')
                 # Append the score to list
-                self.points.append(server.listen(player, 'imageScoreRequest'))
+                self.points.append(int(server.listen(player, 'imageScoreRequest')))
                 # Add feedback to continue
                 self.feedback += 1
             print('')
@@ -90,14 +91,20 @@ class GameEngine(threading.Thread):
 
             # Handling score
             print('Handling score..')
-            """ CODE MISSING """
-            """   CHARLOTTE  """
-            winner = "'pass'"
+            print('All points:', self.points)
+            countedPoints = countPoints(self.points, len(self.players))
+            print('CountedPoints:', countedPoints)
+            sortedPoints = bubble_sort(countedPoints)
+            print('sortedPoints:', sortedPoints)
+            winnerValue = max(countedPoints)
+            winnerIndex = countedPoints.index(winnerValue)
+            winner = 'Player ' + str(winnerIndex)
+            print('Winner is', winner)
             print('')
 
             # Sending winner to all players
             for player in self.players:
-                server.sendMessage(player, 'Winner is ' + winner + '!', 'message')
+                server.sendMessage(player, winner, 'winnerChickenDinner')
             print('')
 
             # Request new game

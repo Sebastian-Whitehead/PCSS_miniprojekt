@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from Client import Client
-from edit_image import edit_image
+from edit_image import edit_image, retrieve_PI_path
 
 LARGEFONT = ("Verdana", 35)
 
@@ -21,39 +21,30 @@ class tkinterApp(tk.Tk):
 
         # creating a container
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
-        container = tk.Frame(self, )
-        container.grid()
+        self.container = tk.Frame(self, )
+        self.container.grid()
 
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
 
         # initializing frames to an empty array
         self.frames = {}
 
-        # iterating through a tuple consisting
-        # of the different page layouts
-        for F in (StartPage, Page1, Page2, Page3, Page4, hostPage):
-            frame = F(container, self, client=self.client)
-
-            # initializing frame of that object from
-            # startpage, page1, page2, page3, and page4 respectively with
-            # for loop
-            self.frames[F] = frame
-
-            frame.grid(row=0, column=0, sticky="nsew")
+        # Make start page
+        frame = StartPage(self.container, self, client=self.client)
+        self.frames[StartPage] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(StartPage)
-
-    def show_frame_hostPage(self):
-        self.show_frame(hostPage)
-
-    def show_frame_page1(self):
-        self.show_frame(Page1)
 
     # to display the current frame passed as
     # parameter
     def show_frame(self, cont):
-        frame = self.frames[cont]
+        # Make page and go to it
+        frame = cont(self.container, self, client=self.client)
+        self.frames[cont] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+
         frame.tkraise()
         print('Showing frame', cont)
 
@@ -187,7 +178,7 @@ class Page2(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
-        meme = Image.open(self.client.memeImage)
+        meme = Image.open('images/' + self.client.memeImage)
         w, h = meme.size
         if w > h:
             scale = w / h
@@ -199,9 +190,10 @@ class Page2(tk.Frame):
             w = int(h / scale)
         meme = meme.resize((w, h))
         meme = ImageTk.PhotoImage(meme)
-        meme_lbl = tk.Label(self, image=meme)
-        meme_lbl.image = meme
-        meme_lbl.grid(row=1, column=1, padx=10, pady=10)
+
+        self.meme_lbl = tk.Label(self, image=meme)
+        self.meme_lbl.image = meme
+        self.meme_lbl.grid(row=1, column=1, padx=10, pady=10)
 
         # Text box to write funny haha meme
         self.MemeText: Entry = tk.Entry(self)
@@ -211,6 +203,11 @@ class Page2(tk.Frame):
                              command=lambda: self.fetchPage2(controller))
         button2.grid(row=3, column=1, padx=10, pady=10)
 
+    #def update(self):
+       # pass
+
+
+
     # Submit text button handle
     def fetchPage2(self, controller):
         # Get written text input to image
@@ -219,7 +216,7 @@ class Page2(tk.Frame):
         self.client.sendMessage('imageTextRequest', userInputText)
 
         # Let the host listen for score giving state
-        # EKSTRA LISTEN DON NO WHY
+        # EKSTRA LISTEN DON NO WHY Can maybe be deleted
         #serverKey = self.client.listen()
         #print(serverKey)
         serverKey = self.client.listen()
@@ -228,8 +225,7 @@ class Page2(tk.Frame):
             imageTexts = serverKey[1]
             # Make meme for each text input into the image
             for text in imageTexts:
-                # Call threads on edit_image function
-                memeImage = threading.Thread(target=edit_image, args=(self.client.memeImage, text[:1], text[2:])).start()
+                memeImage = edit_image(self.client.memeImage, text[:1], text[2:])
                 self.client.memelist.append(memeImage)
 
             controller.show_frame(Page3)
@@ -248,13 +244,10 @@ class Page3(tk.Frame):
         label = ttk.Label(self, text="---Voting Time---", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
-        #memelist = ('andreas.png','andreas.png','andreas.png','andreas.png')
-        memelist = self.client.memelist
-
         # For loop that shows funny memes, only shows equal to amount of players
-        for x, meme in enumerate(memelist):
-            meme = Image.open(meme)
+        for x, meme in enumerate(self.client.memelist):
             w, h = meme.size
+            print(meme)
             # Resizes images depending on the longest side
             # If horizontal - places images in a 2 x 2 grid
 
@@ -302,14 +295,19 @@ class Page3(tk.Frame):
         # Score to send to server
         score = str(button.value)
         self.client.sendMessage('imageScoreRequest', score)
-        # Go to page 4 (Score board)
-        controller.show_frame(Page4)
+        serverKey = self.client.listen()
+        if serverKey[0] == 'winnerChickenDinner':
+            self.client.winner = serverKey[1]
+            # Go to page 4 (Score board)
+            controller.show_frame(Page4)
 
 # Score screen
 class Page4(tk.Frame):
 
     def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
+        self.client = client
+
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
