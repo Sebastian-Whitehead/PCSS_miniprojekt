@@ -1,7 +1,7 @@
 import threading
 from MemeImage import MemeImage
 from Bubble_sort import *
-
+import multiprocessing
 """
 # Game engine for the game, keeping track of each step
 # Will continue to next step of the game, when Feedback
@@ -48,6 +48,15 @@ class GameEngine(threading.Thread):
                 self.isGameReady(server)
         return False
 
+    def sendListen(self, playerArg, msgContent, msgType, rcvArg, outputList, actServer):
+        print("Send >> Listen")
+        actServer.sendMessage(playerArg, msgContent, msgType)
+        # Append the text to the list
+        outputList.append(rcvArg)
+        # Add feedback
+        self.feedback += 1
+        return outputList
+
     # Start the game - send random image to all players
     # Get meme or image text in return
     def startGame(self, server):
@@ -56,13 +65,17 @@ class GameEngine(threading.Thread):
 
         # Send image to all players
         for player in self.players:
+            self.texts.extend(self.sendListen(self, player, self.memeImage.getImageName(), 'imageTextRequest', player.ID + ':' + server.listen(player, 'imageTextRequest'), self.texts, server))
+
             # Request each player
-            print()
+            '''print()
             server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
             # Append the text to the list
             self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
             # Add feedback
-            self.feedback += 1
+            self.feedback += 1'''
+
+
         print('')
 
     # Send all memes to all players
@@ -74,12 +87,13 @@ class GameEngine(threading.Thread):
 
             # Request score from players
             for pos, player in enumerate(self.players):
-                # Request all players for a score
+                self.points.extend(sendListen(self, player, self.texts, 'imageScoreRequest', int(server.listen(player, 'imageScoreRequest')), self.points))
+                '''# Request all players for a score
                 server.sendMessage(player, self.texts, 'imageScoreRequest')
                 # Append the score to list
                 self.points.append(int(server.listen(player, 'imageScoreRequest')))
                 # Add feedback to continue
-                self.feedback += 1
+                self.feedback += 1'''
             print('')
 
     # Handle favorite memes and calculate a score
