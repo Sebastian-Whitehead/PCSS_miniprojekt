@@ -65,7 +65,9 @@ class GameEngine(threading.Thread):
 
         # Send image to all players
         for player in self.players:
-            self.texts.extend(self.sendListen(self, player, self.memeImage.getImageName(), 'imageTextRequest', player.ID + ':' + server.listen(player, 'imageTextRequest'), self.texts, server))
+            self.texts.extend(self.sendListen(player, self.memeImage.getImageName(), 'imageTextRequest',
+                                              player.ID + ':' + server.listen(player, 'imageTextRequest'),
+                                              self.texts, server))
 
             # Request each player
             '''print()
@@ -87,7 +89,9 @@ class GameEngine(threading.Thread):
 
             # Request score from players
             for pos, player in enumerate(self.players):
-                self.points.extend(sendListen(self, player, self.texts, 'imageScoreRequest', int(server.listen(player, 'imageScoreRequest')), self.points))
+                self.points.extend(self.sendListen(player, self.texts, 'imageScoreRequest',
+                                                   int(server.listen(player, 'imageScoreRequest')), self.points))
+
                 '''# Request all players for a score
                 server.sendMessage(player, self.texts, 'imageScoreRequest')
                 # Append the score to list
