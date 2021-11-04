@@ -23,7 +23,8 @@ def resizeImage(image):
 
 # Splits longer strings in to two lines
 def split_string(input_text, img, font):
-    if img.size[0] < font.getsize(input_text)[0]:  # Is the total string width in specified font and size wider than the image
+    # Is the total string width in specified font and size wider than the image
+    if img.size[0] < font.getsize(input_text)[0]:
         strings_list = input_text.split()  # Split input_text into list of words
         strings_added = 0  # Number of words put into the test string
         testLine = ""  # Test String to find splitting point of input_text
@@ -52,7 +53,7 @@ def split_string(input_text, img, font):
         return line1, line0
 
 
-# Edit imput text onto image
+# Edit input text onto image
 def edit_image(input_path, player_id, input_text):
     img = Image.open(f'./images/{input_path}')  # Open an Image
     img = resizeImage(img)
@@ -99,6 +100,7 @@ def retrieve_PI_path(imageToRetrieve, player_id):
     return imgPath
 
 
+# Text Code
 if __name__ == '__main__':
     CurrentImgPath = "star.png"
 
