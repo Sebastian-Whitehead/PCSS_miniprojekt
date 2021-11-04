@@ -8,6 +8,8 @@ from SendReceiveImage import SendReceiveImage
 - Host disconnect 
 """
 
+feedback = 0
+
 # Server class. Connects with client
 class Server(GameEngine, SendReceiveImage):
 

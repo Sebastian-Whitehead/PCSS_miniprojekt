@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from Client import Client
-from edit_image import edit_image, retrieve_PI_path, resizeImage
+from edit_image import edit_image, resizeImage
 
 
 LARGEFONT = ("Verdana", 35)

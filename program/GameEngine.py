@@ -2,16 +2,20 @@ import threading
 from MemeImage import MemeImage
 from Bubble_sort import *
 import multiprocessing
+
 """
 # Game engine for the game, keeping track of each step
 # Will continue to next step of the game, when Feedback
   is equal to amount of players in the game
 """
+feedback = 0
+points_lock = multiprocessing.Lock()
+feedback_lock = multiprocessing.Lock()
 
 
 class GameEngine():
     def __init__(self):
-        #multiprocessing.Process.__init__(self)
+        # multiprocessing.Process.__init__(self)
         # All players that are currently on the server (Keeps on disconnect)
         self.players = []
         # Meme image (Not implemented)
@@ -65,12 +69,16 @@ class GameEngine():
             self.feedback += 1
         print('')
 
-    def sendListen(self, server, player):
+    def sendListen(self, server, player, feedback, answer):
+        print("sending message")
         server.sendMessage(player, self.texts, 'imageScoreRequest')
+
         # Append the score to list
-        self.points.append(int(server.listen(player, 'imageScoreRequest')))
+        answer.append = int(server.listen(player, 'imageScoreRequest'))
+
+        # TODO: ADD WAITING FOR OTHER PLAYERS SCREEN HERE
         # Add feedback to continue
-        self.feedback += 1
+        feedback.value += 1
 
     # Send all memes to all players
     # Request each player for a favorite meme
@@ -78,15 +86,20 @@ class GameEngine():
         if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
             print('All players has send their image text')
             self.setStatus('imageScoreRequest')
+            t = {}
+            FB = multiprocessing.Value('i', 0)
+            ans = multiprocessing.Array('i', range(0))
 
             # Request score from players
             for pos, player in enumerate(self.players):
+                # start a thread for each player that requests score and listens for an answer
+                t[pos] = multiprocessing.Process(target=self.sendListen, args=(server, player, FB, ans))
+                t[pos].start()
 
-                '''t1 = multiprocessing.Process(target=self.sendListen, args=(server, player))
-                t1.start()
-                t1.join()'''
-                self.sendListen(server, player)
-                #multiprocessing.Process(target=self.sendListen, args=(server, player)).start()
+            for pos in t:  # After all threads are started begin to join the threads 1 by one
+                t[pos].join()  # Wait for thread to complete then join
+                self.feedback += FB.value  # transfer the variables to the corresponding local definitions.
+                self.points.extend(ans)
 
                 '''# Request all players for a score
                 server.sendMessage(player, self.texts, 'imageScoreRequest')
@@ -99,6 +112,7 @@ class GameEngine():
     # Handle favorite memes and calculate a score
     # Send message to all player who the winner is, and what image it is
     def handlingScore(self, server):
+        print(f"nr of player= {len(self.players)}, feedback = {self.feedback}, {self.status}")
         if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
             print('All players has send their opinion')
             self.setStatus('handlingScore')
