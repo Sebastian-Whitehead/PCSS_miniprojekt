@@ -1,9 +1,8 @@
 import socket, pickle, json
-from program.SendReceiveImage import SendReceiveImage
+#from program.SendReceiveImage import SendReceiveImage
 #from program.MemeImage import makeImageToMeme
 
-class Client(SendReceiveImage):
-
+class Client():
 
     # Initial setup
     def __init__(self):

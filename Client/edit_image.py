@@ -1,9 +1,23 @@
 # Importing the PIL library
+import PIL
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import threading
 import time
+
+def resizeImage(image):
+    w, h = image.size
+    if w > h:
+        scale = w / h
+        w = int(500)
+        h = int(w / scale)
+    elif w < h:
+        scale = h / w
+        h = int(450)
+        w = int(h / scale)
+    image = image.resize((w, h))
+    return image
 
 
 # Splits longer strings in to two lines
@@ -40,9 +54,11 @@ def split_string(input_text, img, font):
 # Edit imput text onto image
 def edit_image(input_path, player_id, input_text):
     img = Image.open(f'./images/{input_path}')  # Open an Image
+    img = resizeImage(img)
     I1 = ImageDraw.Draw(img)  # Call draw Method to add 2D graphics in an image
-    Font = 'ComicSansMS3.ttf'
+    Font = 'impact.ttf'
     TextSize = 40
+
     myFont = ImageFont.truetype(Font, TextSize)  # Custom font style and font size
 
     if img.size[0] * 2 < myFont.getsize(input_text)[0]:
@@ -55,7 +71,7 @@ def edit_image(input_path, player_id, input_text):
         textX = img.size[0] / 2 - myFont.getsize(input_text0)[0] / 2
         textY = img.size[1] - myFont.getsize(input_text0)[1] - 10
 
-        I1.text((textX, textY), input_text0, font=myFont, fill=(100, 100, 100))
+        I1.text((textX, textY), input_text0, font=myFont, fill='white', stroke_width= 2, stroke_fill= 'black')
 
         # If there is text in teh second line
         if len(input_text1) > 0:
@@ -63,7 +79,7 @@ def edit_image(input_path, player_id, input_text):
             textX = img.size[0] / 2 - myFont.getsize(input_text1)[0] / 2
             textY -= myFont.getsize(input_text1)[1] - 5
 
-            I1.text((textX, textY), input_text1, font=myFont, fill=(100, 100, 100))
+            I1.text((textX, textY), input_text1, font=myFont, fill='white', stroke_width= 2, stroke_fill= 'black')
 
         # preview image
         # img.show()

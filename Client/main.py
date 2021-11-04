@@ -3,7 +3,8 @@ import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from Client import Client
-from edit_image import edit_image, retrieve_PI_path
+from edit_image import edit_image, retrieve_PI_path, resizeImage
+
 
 LARGEFONT = ("Verdana", 35)
 
@@ -179,16 +180,7 @@ class Page2(tk.Frame):
 
         # Inserts the image and resizes it to fit the screen size
         meme = Image.open('images/' + self.client.memeImage)
-        w, h = meme.size
-        if w > h:
-            scale = w / h
-            w = int(500)
-            h = int(w / scale)
-        elif w < h:
-            scale = h / w
-            h = int(450)
-            w = int(h / scale)
-        meme = meme.resize((w, h))
+        meme = resizeImage(meme)
         meme = ImageTk.PhotoImage(meme)
 
         self.meme_lbl = tk.Label(self, image=meme)
@@ -225,6 +217,7 @@ class Page2(tk.Frame):
             imageTexts = serverKey[1]
             # Make meme for each text input into the image
             for text in imageTexts:
+                print(text)
                 memeImage = edit_image(self.client.memeImage, text[:1], text[2:])
                 self.client.memelist.append(memeImage)
 
