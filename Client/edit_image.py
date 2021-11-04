@@ -6,6 +6,7 @@ from PIL import ImageFont
 import threading
 import time
 
+
 def resizeImage(image):
     w, h = image.size
     if w > h:
@@ -18,6 +19,7 @@ def resizeImage(image):
         w = int(h / scale)
     image = image.resize((w, h))
     return image
+
 
 # Splits longer strings in to two lines
 def split_string(input_text, img, font):
@@ -62,7 +64,7 @@ def edit_image(input_path, player_id, input_text):
 
     if img.size[0] * 2 < myFont.getsize(input_text)[0]:
         print("to much text!")
-        #TODO: To much text warning message
+        # TODO: To much text warning message
     else:
         # Split into two lines if input string is to long for 1
         input_text1, input_text0 = split_string(input_text, img, myFont)
@@ -71,7 +73,7 @@ def edit_image(input_path, player_id, input_text):
         textX = img.size[0] / 2 - myFont.getsize(input_text0)[0] / 2
         textY = img.size[1] - myFont.getsize(input_text0)[1] - 10
 
-        I1.text((textX, textY), input_text0, font=myFont, fill='white', stroke_width= 2, stroke_fill= 'black')
+        I1.text((textX, textY), input_text0, font=myFont, fill='white', stroke_width=2, stroke_fill='black')
 
         # If there is text in teh second line
         if len(input_text1) > 0:
@@ -79,7 +81,7 @@ def edit_image(input_path, player_id, input_text):
             textX = img.size[0] / 2 - myFont.getsize(input_text1)[0] / 2
             textY -= myFont.getsize(input_text1)[1] - 5
 
-            I1.text((textX, textY), input_text1, font=myFont, fill='white', stroke_width= 2, stroke_fill= 'black')
+            I1.text((textX, textY), input_text1, font=myFont, fill='white', stroke_width=2, stroke_fill='black')
 
         # preview image
         # img.show()
@@ -89,6 +91,7 @@ def edit_image(input_path, player_id, input_text):
         print(f"Image Saved = ./playerImages/{player_id}-{input_path}")
 
     return img
+
 
 # Retrieves the path of a submitted image
 def retrieve_PI_path(imageToRetrieve, player_id):
@@ -101,4 +104,5 @@ if __name__ == '__main__':
 
     threading.Thread(target=edit_image, args=(CurrentImgPath, 1, "short meme text")).start()
     threading.Thread(target=edit_image, args=(
-    CurrentImgPath, 2, "This is a longer meme text to testing weather the line splitting function still works")).start()
+        CurrentImgPath, 2,
+        "This is a longer meme text to testing weather the line splitting function still works")).start()

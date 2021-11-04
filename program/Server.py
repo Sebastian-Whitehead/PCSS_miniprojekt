@@ -8,6 +8,7 @@ from SendReceiveImage import SendReceiveImage
 - Host disconnect 
 """
 
+
 # Server class. Connects with client
 class Server(GameEngine, SendReceiveImage):
 
@@ -37,7 +38,6 @@ class Server(GameEngine, SendReceiveImage):
 
         # While Listening
         while True:
-
             # Server listens for players joining the server
             player = Player()
             player.c, player.addr = self.s.accept()
@@ -65,7 +65,6 @@ class Server(GameEngine, SendReceiveImage):
         # Add new player to server
         self.players.append(newPlayer)
         print('New player')
-
 
         # Confirm player with a message
         """
@@ -135,6 +134,7 @@ class Server(GameEngine, SendReceiveImage):
     # Server Close Function
     def kill(self):
         self.c.close()
+
 
 # Start server with the port 1024
 if __name__ == '__main__':
