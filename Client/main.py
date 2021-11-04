@@ -4,7 +4,7 @@ from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from Client import Client
 from edit_image import edit_image, resizeImage
-
+from handleHighScoreList import *
 
 LARGEFONT = ("Verdana", 35)
 
@@ -16,6 +16,7 @@ class tkinterApp(tk.Tk):
 
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
+
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
         self.client = Client()
@@ -81,6 +82,9 @@ class StartPage(tk.Frame, tkinterApp):
                              command=lambda: self.fetchStartPage(controller)
                              )
         button1.grid(row=5, column=0, padx=10, pady=10)
+
+        button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
+        button2.grid(row=0, column=1, padx=10, pady=10)
 
         meme = Image.open('work.jpg')
         meme = ImageTk.PhotoImage(meme)
@@ -295,6 +299,8 @@ class Page3(tk.Frame):
             controller.show_frame(Page4)
 
 # Score screen
+
+
 class Page4(tk.Frame):
 
     def __init__(self, parent, controller, client):
@@ -315,6 +321,34 @@ class Page4(tk.Frame):
         button1 = ttk.Button(self, text="m'ka' goodnight",
                              command=lambda: controller.show_frame(StartPage))
         button1.grid(row=players + 2, column=1, padx=10, pady=10)
+
+
+#scores=[["Charlotte", 73], ["Tobias", 12], ["Klaus", 35], ["Rebecca", 1]]
+
+class HighScorePage(tk.Frame):
+
+    def __init__(self, parent, controller, client):
+        tk.Frame.__init__(self, parent)
+        self.client = client
+
+        label = ttk.Label(self, text="HIGH SCORES", font=LARGEFONT)
+        label.grid(row=0, column=0, padx=10, pady=10)
+        scores = loadScores("allTimeHighScore.txt")
+        self.showhighscore(scores)
+
+        button1 = ttk.Button(self, text="Back", command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=0, column=1, padx=10, pady=10)
+
+    def showhighscore(self, highlist):
+        for x, score in enumerate(reversed(highlist)):
+            if x > 10:
+                break
+            label = ttk.Label(self, text=score, font=10)
+            label.grid(row=x + 1, column=0, padx=10, pady=10)
+
+
+
+
 
 # Driver Code
 if __name__ == '__main__':
