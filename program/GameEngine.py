@@ -9,9 +9,9 @@ import multiprocessing
 """
 
 
-class GameEngine(threading.Thread):
+class GameEngine():
     def __init__(self):
-        threading.Thread.__init__(self)
+        #multiprocessing.Process.__init__(self)
         # All players that are currently on the server (Keeps on disconnect)
         self.players = []
         # Meme image (Not implemented)
@@ -48,15 +48,6 @@ class GameEngine(threading.Thread):
                 self.isGameReady(server)
         return False
 
-    def sendListen(self, playerArg, msgContent, msgType, rcvArg, outputList, actServer):
-        print("Send >> Listen")
-        actServer.sendMessage(playerArg, msgContent, msgType)
-        # Append the text to the list
-        outputList.append(rcvArg)
-        # Add feedback
-        self.feedback += 1
-        return outputList
-
     # Start the game - send random image to all players
     # Get meme or image text in return
     def startGame(self, server):
@@ -65,18 +56,21 @@ class GameEngine(threading.Thread):
 
         # Send image to all players
         for player in self.players:
-            self.texts.extend(self.sendListen(self, player, self.memeImage.getImageName(), 'imageTextRequest', player.ID + ':' + server.listen(player, 'imageTextRequest'), self.texts, server))
-
             # Request each player
-            '''print()
+            print()
             server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
             # Append the text to the list
             self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
             # Add feedback
-            self.feedback += 1'''
-
-
+            self.feedback += 1
         print('')
+
+    def sendListen(self, server, player):
+        server.sendMessage(player, self.texts, 'imageScoreRequest')
+        # Append the score to list
+        self.points.append(int(server.listen(player, 'imageScoreRequest')))
+        # Add feedback to continue
+        self.feedback += 1
 
     # Send all memes to all players
     # Request each player for a favorite meme
@@ -87,7 +81,13 @@ class GameEngine(threading.Thread):
 
             # Request score from players
             for pos, player in enumerate(self.players):
-                self.points.extend(sendListen(self, player, self.texts, 'imageScoreRequest', int(server.listen(player, 'imageScoreRequest')), self.points))
+
+                '''t1 = multiprocessing.Process(target=self.sendListen, args=(server, player))
+                t1.start()
+                t1.join()'''
+                self.sendListen(server, player)
+                #multiprocessing.Process(target=self.sendListen, args=(server, player)).start()
+
                 '''# Request all players for a score
                 server.sendMessage(player, self.texts, 'imageScoreRequest')
                 # Append the score to list
