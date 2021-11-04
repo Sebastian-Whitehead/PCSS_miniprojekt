@@ -19,7 +19,6 @@ def resizeImage(image):
     image = image.resize((w, h))
     return image
 
-
 # Splits longer strings in to two lines
 def split_string(input_text, img, font):
     if img.size[0] < font.getsize(input_text)[0]:  # Is the total string width in specified font and size wider than the image
@@ -63,6 +62,7 @@ def edit_image(input_path, player_id, input_text):
 
     if img.size[0] * 2 < myFont.getsize(input_text)[0]:
         print("to much text!")
+        #TODO: To much text warning message
     else:
         # Split into two lines if input string is to long for 1
         input_text1, input_text0 = split_string(input_text, img, myFont)
