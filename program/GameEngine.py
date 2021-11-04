@@ -70,7 +70,6 @@ class GameEngine():
         print('')
 
     def sendListen(self, server, player, feedback, answer):
-        print("sending message")
         server.sendMessage(player, self.texts, 'imageScoreRequest')
 
         # Append the score to list
