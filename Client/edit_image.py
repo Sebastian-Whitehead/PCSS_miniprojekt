@@ -1,10 +1,9 @@
 # Importing the PIL library
-import PIL
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-import threading
-import time
+import multiprocessing
+
 
 
 def resizeImage(image):
@@ -100,11 +99,11 @@ def retrieve_PI_path(imageToRetrieve, player_id):
     return imgPath
 
 
-# Text Code
+# Test Code
 if __name__ == '__main__':
     CurrentImgPath = "star.png"
 
-    threading.Thread(target=edit_image, args=(CurrentImgPath, 1, "short meme text")).start()
-    threading.Thread(target=edit_image, args=(
+    multiprocessing.Process(target=edit_image, args=(CurrentImgPath, 1, "short meme text")).start()
+    multiprocessing.Process(target=edit_image, args=(
         CurrentImgPath, 2,
         "This is a longer meme text to testing weather the line splitting function still works")).start()
