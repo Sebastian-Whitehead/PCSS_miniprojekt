@@ -61,7 +61,7 @@ class GameEngine():
         value = server.listen(player, key)
         if value.isdigit(): value = int(value)
         answer.append = value  # Append the score to list
-        '''
+    '''
 
     def sendListen(self, server, player, feedback, answer):
         server.sendMessage(player, self.texts, 'imageScoreRequest')
@@ -187,5 +187,5 @@ class GameEngine():
         if self.rounds >= self.totalRounds:
             self.setStatus('endGame')
 
-if __name__ == '__main__':
-    GameEngine()
+
+if __name__ == '__main__': GameEngine()
