@@ -1,7 +1,7 @@
 import threading
 from MemeImage import MemeImage
 from Bubble_sort import *
-import multiprocessing
+import multiprocessing, ctypes
 
 """
 # Game engine for the game, keeping track of each step
@@ -54,17 +54,22 @@ class GameEngine():
 
     def sendListen(self, server, player, feedback, answer, message, key):
         server.sendMessage(player, message, key)  # Send message to server
-        answer.append = int(server.listen(player, key))  # Append the score to list
+        value = server.listen(player, key)
+        if value.isdigit(): value = int(value)
+        #else: value = value.encode('utf-8')
+        print(f'{value=}')
+        answer += [value]  # Append the score to list
+        print(f'{answer=}')
 
         # TODO: ADD WAITING FOR OTHER PLAYERS SCREEN HERE
         # Add feedback to continue
         feedback.value += 1
 
-    def startThread(self, server, message, key):
+    def startThread(self, server, type, message, key):
         returnedData = []
         t = {}
         FB = multiprocessing.Value('i', 0)
-        ans = multiprocessing.Array('i', range(0))
+        ans = multiprocessing.Array(type, 1)
 
         # Request score from players
         for pos, player in enumerate(self.players):
@@ -89,15 +94,8 @@ class GameEngine():
         self.setStatus('imageTextRequest')
 
         # Send image to all players
-        for player in self.players:
-            # Request each player
-            print()
-            server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
-            # Append the text to the list
-            self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
-            # Add feedback
-            self.feedback += 1
-        print('')
+        self.texts = self.startThread(server, ctypes.c_char_p, self.memeImage.getImageName(), 'imageTextRequest')
+        print(f'{self.points}', end='\n\n')
 
     # Send all memes to all players
     # Request each player for a favorite meme
@@ -106,7 +104,7 @@ class GameEngine():
             print('All players has send their image text')
             self.setStatus('imageScoreRequest')
 
-            self.points = self.startThread(server, self.texts, 'imageScoreRequest')
+            self.points = self.startThread(server, 'i', self.texts, 'imageScoreRequest')
             print(f'{self.points}', end='\n\n')
 
     # Handle favorite memes and calculate a score
