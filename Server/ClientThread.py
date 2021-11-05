@@ -1,6 +1,6 @@
-import threading
+import multiprocessing
 
-class ClientThread(threading.Thread):
+class ClientThread(multiprocessing.Process):
     def __init__(self):
         super(ClientThread, self).__init__()
 
