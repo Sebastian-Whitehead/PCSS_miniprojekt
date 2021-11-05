@@ -193,12 +193,10 @@ class Page2(tk.Frame):
         self.MemeText: Entry = tk.Entry(self)
         self.MemeText.grid(row=2, column=1, padx=10, pady=10)
 
-        button2 = ttk.Button(self, text="Submit",
-                             command=lambda: self.fetchPage2(controller))
-        button2.grid(row=3, column=1, padx=10, pady=10)
+        self.button2 = ttk.Button(self, text="Submit",
+                             command=lambda: [self.button2.configure(text="Waiting..."), self.fetchPage2(controller)])
+        self.button2.grid(row=3, column=1, padx=10, pady=10)
 
-    #def update(self):
-       # pass
 
 
 
@@ -291,6 +289,10 @@ class Page3(tk.Frame):
         score = str(button.value)
         self.client.sendMessage('imageScoreRequest', score)
         serverKey = self.client.listen()
+
+        WaitingLbl = ttk.Label(self, text="Waiting for other players")
+        WaitingLbl.grid(row=10, column=1, padx=10, pady=10)
+
         if serverKey[0] == 'winnerChickenDinner':
             self.client.winner = serverKey[1]
             # Go to page 4 (Score board)
