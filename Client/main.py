@@ -83,8 +83,6 @@ class StartPage(tk.Frame, tkinterApp):
                              )
         button1.grid(row=5, column=0, padx=10, pady=10)
 
-        button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
-        button2.grid(row=0, column=1, padx=10, pady=10)
 
         meme = Image.open('work.jpg')
         meme = ImageTk.PhotoImage(meme)
@@ -310,6 +308,7 @@ class Page4(tk.Frame):
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
+
         # Displays all the names
         for x in range(players):
             label = ttk.Label(self, text=x + 1, font=LARGEFONT)
@@ -322,8 +321,10 @@ class Page4(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.grid(row=players + 2, column=1, padx=10, pady=10)
 
+        button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
+        button2.grid(row=players + 3, column=1, padx=10, pady=10)
 
-#scores=[["Charlotte", 73], ["Tobias", 12], ["Klaus", 35], ["Rebecca", 1]]
+
 
 class HighScorePage(tk.Frame):
 
@@ -336,7 +337,7 @@ class HighScorePage(tk.Frame):
         scores = loadScores("allTimeHighScore.txt")
         self.showhighscore(scores)
 
-        button1 = ttk.Button(self, text="Back", command=lambda: controller.show_frame(StartPage))
+        button1 = ttk.Button(self, text="Back", command=lambda: controller.show_frame(Page4))
         button1.grid(row=0, column=1, padx=10, pady=10)
 
     def showhighscore(self, highlist):
