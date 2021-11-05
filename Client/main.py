@@ -1,4 +1,3 @@
-import threading
 import tkinter as tk
 from tkinter import ttk, Entry
 from PIL import Image, ImageTk
@@ -16,7 +15,6 @@ class tkinterApp(tk.Tk):
 
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
-
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
         self.client = Client()
@@ -49,6 +47,7 @@ class tkinterApp(tk.Tk):
 
         frame.tkraise()
         print('Showing frame', cont)
+
 
 # Start game
 class StartPage(tk.Frame, tkinterApp):
@@ -83,7 +82,6 @@ class StartPage(tk.Frame, tkinterApp):
                              )
         button1.grid(row=5, column=0, padx=10, pady=10)
 
-
         meme = Image.open('work.jpg')
         meme = ImageTk.PhotoImage(meme)
         meme_lbl = tk.Label(self, image=meme)
@@ -111,6 +109,7 @@ class StartPage(tk.Frame, tkinterApp):
         elif serverKey[0] == 'imageTextRequest':
             controller.show_frame(Page2)
 
+
 # Where you wait for game to start
 class Page1(tk.Frame, tkinterApp):
     def __init__(self, parent, controller, client):
@@ -131,6 +130,7 @@ class Page1(tk.Frame, tkinterApp):
         meme_lbl = tk.Label(self, image=meme)
         meme_lbl.image = meme
         meme_lbl.place(relx=.5, rely=0.7, anchor="c")
+
 
 # Host page to start the game
 class hostPage(tk.Frame, tkinterApp):
@@ -168,6 +168,7 @@ class hostPage(tk.Frame, tkinterApp):
         # Continue to next page (page 2)
         controller.show_frame(Page2)
 
+
 # Write funny haha meme text page
 class Page2(tk.Frame):
     def __init__(self, parent, controller, client):
@@ -193,12 +194,12 @@ class Page2(tk.Frame):
         self.MemeText: Entry = tk.Entry(self)
         self.MemeText.grid(row=2, column=1, padx=10, pady=10)
 
-        self.button2 = ttk.Button(self, text="Submit",
-                             command=lambda: [self.button2.configure(text="Waiting..."), self.fetchPage2(controller)])
-        self.button2.grid(row=3, column=1, padx=10, pady=10)
+        button2 = ttk.Button(self, text="Submit",
+                             command=lambda: self.fetchPage2(controller))
+        button2.grid(row=3, column=1, padx=10, pady=10)
 
-
-
+    # def update(self):
+    # pass
 
     # Submit text button handle
     def fetchPage2(self, controller):
@@ -209,8 +210,8 @@ class Page2(tk.Frame):
 
         # Let the host listen for score giving state
         # EKSTRA LISTEN DON NO WHY Can maybe be deleted
-        #serverKey = self.client.listen()
-        #print(serverKey)
+        # serverKey = self.client.listen()
+        # print(serverKey)
         serverKey = self.client.listen()
         if serverKey[0] == 'imageScoreRequest':
             # Get all players texts
@@ -289,14 +290,11 @@ class Page3(tk.Frame):
         score = str(button.value)
         self.client.sendMessage('imageScoreRequest', score)
         serverKey = self.client.listen()
-
-        WaitingLbl = ttk.Label(self, text="Waiting for other players")
-        WaitingLbl.grid(row=10, column=1, padx=10, pady=10)
-
         if serverKey[0] == 'winnerChickenDinner':
             self.client.winner = serverKey[1]
             # Go to page 4 (Score board)
             controller.show_frame(Page4)
+
 
 # Score screen
 
@@ -309,7 +307,6 @@ class Page4(tk.Frame):
 
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
-
 
         # Displays all the names
         for x in range(players):
@@ -325,7 +322,6 @@ class Page4(tk.Frame):
 
         button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
         button2.grid(row=players + 3, column=1, padx=10, pady=10)
-
 
 
 class HighScorePage(tk.Frame):
@@ -348,9 +344,6 @@ class HighScorePage(tk.Frame):
                 break
             label = ttk.Label(self, text=score, font=10)
             label.grid(row=x + 1, column=0, padx=10, pady=10)
-
-
-
 
 
 # Driver Code
