@@ -52,38 +52,54 @@ class GameEngine():
                 self.isGameReady(server)
         return False
 
-    def sendListen(self, server, player, feedback, answer, message, key):
+    def sendListen(self, server, player, feedback, answer, message, key, pos):
         server.sendMessage(player, message, key)  # Send message to server
         value = server.listen(player, key)
-        if value.isdigit(): value = int(value)
-        #else: value = value.encode('utf-8')
+        if value.isdigit():
+            value = int(value)
+        # else: value = value.encode('utf-8')
+
         print(f'{value=}')
-        answer += [value]  # Append the score to list
-        print(f'{answer=}')
+        print(f"{ctypes.c_wchar_p(value)=}")
+        answer[pos] = ctypes.c_wchar_p(value)  # Input value into
+        print(f"{answer=}")
+        print(f"{answer[pos]=}")
 
         # TODO: ADD WAITING FOR OTHER PLAYERS SCREEN HERE
         # Add feedback to continue
         feedback.value += 1
+        print("feedback updated")
 
     def startThread(self, server, type, message, key):
+        print("\nSTARTING THREAD")
         returnedData = []
-        t = {}
-        FB = multiprocessing.Value('i', 0)
-        ans = multiprocessing.Array(type, 1)
+        t = {}  # Dictionary of active threads
+        FB = multiprocessing.Value('i', 0)  # Process safe feedback varriable
+        ans = multiprocessing.Array(type, len(self.players))  # Process safe response variable
 
         # Request score from players
         for pos, player in enumerate(self.players):
+            print(f"{pos=}")
             # start a thread for each player that requests score and listens for an answer
             t[pos] = multiprocessing.Process(
                 target=self.sendListen,
-                args=(server, player, FB, ans, message, key)
+                args=(server, player, FB, ans, message, key, pos)
             )
             t[pos].start()
+            print(f"{t=}")
 
         for pos in t:  # After all threads are started begin to join the threads 1 by one
+            print(f"JOINING THREAD{pos}")
             t[pos].join()  # Wait for thread to complete then join
+            print("THREAD JOINED")
             self.feedback += FB.value  # transfer the variables to the corresponding local definitions.
-            returnedData.extend(ans)
+
+            print(f"{ans=}")
+            print(f"{pos=}")
+            print(f"{ans[pos]=}")
+            returnedData.append(ctypes.c_wchar_p(ans))
+
+        print(f"{returnedData=}")
 
         return returnedData
 
@@ -94,7 +110,8 @@ class GameEngine():
         self.setStatus('imageTextRequest')
 
         # Send image to all players
-        self.texts = self.startThread(server, ctypes.c_char_p, self.memeImage.getImageName(), 'imageTextRequest')
+        self.texts = self.startThread(server, ctypes.c_wchar_p, self.memeImage.getImageName(), 'imageTextRequest')
+        print("I STARTED THE GAME!!!")
         print(f'{self.points}', end='\n\n')
 
     # Send all memes to all players
@@ -105,6 +122,7 @@ class GameEngine():
             self.setStatus('imageScoreRequest')
 
             self.points = self.startThread(server, 'i', self.texts, 'imageScoreRequest')
+            print("WTF")
             print(f'{self.points}', end='\n\n')
 
     # Handle favorite memes and calculate a score
