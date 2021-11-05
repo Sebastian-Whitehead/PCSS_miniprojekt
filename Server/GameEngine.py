@@ -25,6 +25,9 @@ class GameEngine():
         # Points given from all players
         self.points = []
 
+        self.rounds = 0
+        self.totalRounds = 3
+
         # Minimum players on the server before the game can start
         self.minPlayers = 1
         # The game host
@@ -145,11 +148,13 @@ class GameEngine():
             print(f'{self.points}', end='\n\n')
             '''
 
+            if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
+                self.newRound()
+
     # Handle favorite memes and calculate a score
     # Send message to all player who the winner is, and what image it is
     def handlingScore(self, server):
-        print(f"nr of player= {len(self.players)}, feedback = {self.feedback}, {self.status}")
-        if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
+        if len(self.players) <= self.feedback and self.status == 'endGame':
             print('All players has send their opinion')
             self.setStatus('handlingScore')
 
@@ -176,6 +181,11 @@ class GameEngine():
         self.feedback = 0
         return True
 
+    def newRound(self):
+        self.rounds += 1
+        self.startGame(server)
+        if self.rounds >= self.totalRounds:
+            self.setStatus('endGame')
 
 if __name__ == '__main__':
     GameEngine()
