@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from Client import Client
 from edit_image import edit_image, resizeImage
 from handleHighScoreList import *
+import Bubble_sort
 
 LARGEFONT = ("Verdana", 35)
 
@@ -291,7 +292,7 @@ class Page3(tk.Frame):
         self.client.sendMessage('imageScoreRequest', score)
         serverKey = self.client.listen()
         if serverKey[0] == 'winnerChickenDinner':
-            self.client.winner = serverKey[1]
+            self.client.points = serverKey[1]
             # Go to page 4 (Score board)
             controller.show_frame(Page4)
 
@@ -308,8 +309,24 @@ class Page4(tk.Frame):
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
+        # Handling score
+        print('Handling score..')
+        print(f'{self.client.points=}')
+        countedPoints = Bubble_sort.countPoints(self.client.points, len(self.client.points))
+        print(f'{countedPoints=}')
+        sortedPoints = Bubble_sort.bubble_sort(countedPoints)
+        print(f'{sortedPoints=}')
+
+        ''' Get the winner
+        winnerValue = max(countedPoints)
+        winnerIndex = countedPoints.index(winnerValue)
+        winner = 'Player ' + str(winnerIndex)
+        print('Winner is', winner)
+        print('')
+        '''
+
         # Displays all the names
-        for x in range(players):
+        for x, score in enumerate(sortedPoints):
             label = ttk.Label(self, text=x + 1, font=LARGEFONT)
             label.grid(row=x + 1, column=0, padx=10, pady=10)
 
