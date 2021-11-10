@@ -68,11 +68,11 @@ class GameEngine():
         # Add feedback to continue
         feedback.value += 1
 
-    def startThread(self, server, type, message, key):
+    def startThread(self, server, type, length, message, key):
         returnedData = []
         t = {}
         FB = multiprocessing.Value('i', 0)
-        ans = multiprocessing.Array('i', range(len(self.players)))
+        ans = multiprocessing.Array(type, length)
 
         # Request score from players
         for pos, player in enumerate(self.players):
@@ -129,7 +129,13 @@ class GameEngine():
             # Manufactured data (end) # 
             """
 
-            self.points = self.startThread(server, 'i', self.texts, 'imageScoreRequest')
+            self.points = self.startThread(
+                server=server,
+                type='i',
+                length=range(len(self.players)),
+                message=self.texts,
+                key='imageScoreRequest'
+            )
             print(f'{self.points}', end='\n\n')
 
     # Handle favorite memes and calculate a score

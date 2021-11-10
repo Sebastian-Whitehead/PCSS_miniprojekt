@@ -1,11 +1,14 @@
-import multiprocessing, random
+import multiprocessing, random, string
 
 playersSize = 4
+letter_count = 10
 
 class Player:
     size = 0
-    def __init__(self, id):
+    def __init__(self):
         self.answer = random.randint(0, 9)
+        self.text = ''.join((random.choice(string.ascii_letters) for x in range(letter_count)))
+        print(self.text)
         self.id = Player.size
         Player.size += 1
 
@@ -13,21 +16,33 @@ class GameEngine:
     def __init__(self):
         self.players = []
         for player in range(playersSize):
-            player = Player(len(self.players))
+            player = Player()
             self.players.append(player)
         self.feedback = 0
         self.points = []
 
-    def makeMulti(self):
+        self.makeMulti('i', 'answer')
+        self.makeMulti('c_char', 'text')
+
+    def makeMulti(self, type, target):
         t = {}
         FB = multiprocessing.Value('i', 0)
-        ans = multiprocessing.Array('i', range(len(self.players)))
+
+        array = []
+        for player in range(len(self.players)):
+            inArray = []
+            if type == 'i':
+                inArray = 0
+            elif type == 'c_char':
+                inArray = ['' for i in range(10)]
+            array.append(inArray)
+        ans = multiprocessing.Array(type, array)
 
         # Request score from players
         for pos, player in enumerate(self.players):
             # start a thread for each player that requests score and listens for an answer
             t[pos] = multiprocessing.Process(
-                target=self.multiThreadFunction, args=(player, FB, ans)
+                target=self.multiThreadFunction, args=(player, target, FB, ans)
             )
             t[pos].start()
 
@@ -42,14 +57,18 @@ class GameEngine:
         print()
 
 
-    def multiThreadFunction(self, player, feedback, answer):
+    def multiThreadFunction(self, player, target, feedback, answer):
 
         print(f'{player.id=}')
         print(f'{player.answer=}')
 
         # Append the score to list
-        #answer.append = int(player.answer)
-        answer[player.id] = player.answer
+        value = getattr(player, target)
+        if target == 'points':
+            answer[player.id] = value
+        elif target == 'text':
+            for char in value:
+                print(char)
 
         print(f'{answer[:]=}')
         print()
@@ -60,4 +79,4 @@ class GameEngine:
 
 
 if __name__ == '__main__':
-    GameEngine().makeMulti()
+    GameEngine()
