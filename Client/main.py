@@ -309,6 +309,8 @@ class Page4(tk.Frame):
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
+        print(f'{self.client.points=}')
+
         # Handling score
         print('Handling score..')
         print(f'{self.client.points=}')
