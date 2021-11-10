@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 from Client import Client
 from edit_image import edit_image, resizeImage
 from handleHighScoreList import *
-import Bubble_sort
 
 LARGEFONT = ("Verdana", 35)
 
@@ -291,15 +290,28 @@ class Page3(tk.Frame):
         score = str(button.value)
         self.client.sendMessage('imageScoreRequest', score)
         serverKey = self.client.listen()
-        if serverKey[0] == 'winnerChickenDinner':
-            self.client.points = serverKey[1]
+
+        if serverKey[0] == 'packedScores':
+            self.client.packedScores = serverKey[1]
             # Go to page 4 (Score board)
             controller.show_frame(Page4)
 
+        """
+            print(f'{self.client.sortedNames=}')
+            if not hasattr(self.client, 'sortedPoints'):
+                serverKey = self.client.listen() # Start listen again
+
+        if serverKey[0] == 'sortedPoints':
+            self.client.sortedPoints = serverKey[1]
+            print(f'{self.client.sortedPoints=}')
+            if not hasattr(self.client, 'sortedNames'):
+                serverKey = self.client.listen() # Start listen again
+
+        if hasattr(self.client, 'sortedNames') and hasattr(self.client, 'sortedPoints'):
+            self.client.packedScores = list(zip(self.client.sortedNames, self.client.sortedPoints))
+        """
 
 # Score screen
-
-
 class Page4(tk.Frame):
 
     def __init__(self, parent, controller, client):
@@ -309,31 +321,20 @@ class Page4(tk.Frame):
         label = ttk.Label(self, text="---SCORE---", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
-        print(f'{self.client.points=}')
-
-        # Handling score
-        print('Handling score..')
-        print(f'{self.client.points=}')
-        countedPoints = Bubble_sort.countPoints(self.client.points, len(self.client.points))
-        print(f'{countedPoints=}')
-        sortedPoints = Bubble_sort.bubble_sort(countedPoints)
-        print(f'{sortedPoints=}')
-
-        ''' Get the winner
-        winnerValue = max(countedPoints)
-        winnerIndex = countedPoints.index(winnerValue)
-        winner = 'Player ' + str(winnerIndex)
-        print('Winner is', winner)
-        print('')
-        '''
+        print(f'{self.client.packedScores=}')
 
         # Displays all the names
-        for x, score in enumerate(sortedPoints):
+        for x, player in enumerate(reversed(self.client.packedScores)):
+            print(f'{player=}')
+
             label = ttk.Label(self, text=x + 1, font=LARGEFONT)
             label.grid(row=x + 1, column=0, padx=10, pady=10)
 
-            label = ttk.Label(self, text=player_names[x], font=LARGEFONT)
+            label = ttk.Label(self, text=player[0], font=LARGEFONT)
             label.grid(row=x + 1, column=1, padx=10, pady=10)
+
+            label = ttk.Label(self, text=player[1], font=LARGEFONT)
+            label.grid(row=x + 1, column=2, padx=10, pady=10)
 
         button1 = ttk.Button(self, text="m'ka' goodnight",
                              command=lambda: controller.show_frame(StartPage))

@@ -1,7 +1,7 @@
 from MemeImage import MemeImage
-#from Bubble_sort import *
-import multiprocessing, ctypes, json
-import handleHighScoreList
+import Bubble_sort, handleHighScoreList
+import multiprocessing, ctypes, json, random
+from Player import Player
 
 """
 # Game engine for the game, keeping track of each step
@@ -123,6 +123,12 @@ class GameEngine():
             print('All players has send their image text')
             self.setStatus('imageScoreRequest')
 
+            """ # Manufactured data (start) #
+            self.texts = ['0:Test0', '1:awdawd', '2:awddddd', '3:dddddd']
+            print(f'{self.texts=}')
+            # Manufactured data (end) # 
+            """
+
             self.points = self.startThread(server, 'i', self.texts, 'imageScoreRequest')
             print(f'{self.points}', end='\n\n')
 
@@ -134,29 +140,49 @@ class GameEngine():
             print('All players has send their opinion')
             self.setStatus('handlingScore')
 
-            """
-            # Handling score
-            print('Handling score..')
-            print('All points:', self.points)
-            countedPoints = countPoints(self.points, len(self.players))
-            print('CountedPoints:', countedPoints)
-            sortedPoints = bubble_sort(countedPoints)
-            print('sortedPoints:', sortedPoints)
-            winnerValue = max(countedPoints)
-            winnerIndex = countedPoints.index(winnerValue)
-            winner = 'Player ' + str(winnerIndex)
-            print('Winner is', winner)
-            print('')
+            """ # Manufactured data (start) # 
+            self.manuPlayers = [Player(), Player(), Player(), Player()]
+            self.manupoints = []
+            for i in range(50):
+                n = random.randint(0, len(self.manuPlayers))
+                self.manupoints.append(n)
+
+            self.points = self.manupoints
+            print(f'{self.points=}')
+            print(f'{self.manuPlayers=}')
+            # Manufactured data (end) # 
             """
 
+            # Count points
+            print('Handling score..')
+            print('All points:', self.points)
+            countedPoints = Bubble_sort.countPoints(self.points)
+            print(f'{countedPoints=}')
+
+            # Zip score with name
+            playerNames = [player.name for player in self.manuPlayers]
+            # playerNames = [player.name for player in self.players]
+            packedScores = list(zip(playerNames, countedPoints))
+            print(f'{packedScores=}')
+
             # Save to all time high score list
-            playerNames = [player.name for player in players]
-            packedScores = list(zip(playerNames, self.points))
             handleHighScoreList.saveScores('allTimeHighScore.txt', packedScores)
+
+            # Sort scores
+            sortedPoints = Bubble_sort.bubble_sort(packedScores)
+            print(f'{sortedPoints=}')
+
+            """
+            sortedNames = [player[0] for player in sortedPoints]
+            print(f'{sortedNames=}')
+            sortedPoints = [player[1] for player in sortedPoints]
+            print(f'{sortedPoints=}')
+            """
 
             # Sending winner to all players
             for player in self.players:
-                server.sendMessage(player, self.points, 'winnerChickenDinner')
+                server.sendMessage(player, sortedPoints, 'packedScores')
+                #server.sendMessage(player, sortedPoints, 'sortedPoints')
             print('')
 
             # Request new game
@@ -164,7 +190,7 @@ class GameEngine():
             print('')
             self.memeImage.newRandomImage()
             self.setStatus('inLobby')
-            return server.run()
+            #return server.run()
 
     # Set the status and reset feedback
     # Feedback will activate the next step of the game,

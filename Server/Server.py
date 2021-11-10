@@ -85,10 +85,9 @@ class Server(GameEngine, SendReceiveImage):
     # Send message to specified player
     def sendMessage(self, player: Player, message: [str], key: str):
         # Print message or key to console
-        if message == 'none' or type(message) != str:
-            print('Sending:', '"' + key + '"', 'to', player.getName())
-        else:
-            print('Sending:', '"' + message + '"', 'to', player.getName())
+        print(f'Sending: "{key}" to {player.getName()}')
+        if message != 'none' or type(message) == str:
+            print(f'Message: "{message}"')
         # Encode message to json
         message = json.dumps(message).encode()
         # Packages the message with a matching key

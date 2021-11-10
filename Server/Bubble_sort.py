@@ -1,7 +1,11 @@
-def countPoints(scores: [int], n: int) -> [int]:
+import random
+
+def countPoints(scores: [int]) -> [int]:
     points = []
-    for n in range(n):
-        points.append(scores.count(n))
+    n = max(scores)
+    for x in range(n):
+        summed = scores.count(x)
+        points.append(summed)
     return points
 
 def bubble_sort(scores):
@@ -12,7 +16,7 @@ def bubble_sort(scores):
         flag = 0 #set flag to 0, when flag is zero again it stops
 
         for j in range(n - 1):
-            if scores[j] > scores[j+1]:
+            if scores[j][1] > scores[j+1][1]:
                 temp = scores[j] # make a temporary list to save the new order, which is the same as the current index
                 scores[j] = scores[j+1] #change the current index to j+1,
                 scores[j+1] = temp #change j+1 to temporary, which is j.
@@ -24,8 +28,14 @@ def bubble_sort(scores):
 
 
 if __name__ == '__main__':
-    scores = [0, 2, 3, 2, 1, 0, 1, 3, 1, 1, 1, 2]
+    names = ['name0', 'name1', 'name2', 'name3']
+    scores = []
+    for i in range(50):
+        n = random.randint(0, len(names))
+        scores.append(n)
+
     points = countPoints(scores)
-    print(points)
-    sortedPoints = bubble_sort(points)
-    print(sortedPoints)
+    packedScores = list(zip(names, scores))
+    print(f'{packedScores=}')
+    sortedPoints = bubble_sort(packedScores)
+    print(f'{sortedPoints=}')

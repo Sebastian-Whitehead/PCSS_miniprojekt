@@ -72,6 +72,9 @@ class Client():
         while True:
             # Receiving a request or message
             receive = self.s.recv(1024)
+            print(receive)
+            if len(receive) < 1:
+                print(f'{receive=} (empty)')
             # Loack package using pickle
             package = pickle.loads(receive)
             # Get the key from the package
