@@ -111,20 +111,6 @@ class GameEngine():
             key='imageTextRequest'
         )
         print(f"{self.texts=}")
-
-        '''
-        # Send image to all players
-        for player in self.players:
-            # Request each player
-            print()
-
-            server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
-            # Append the text to the list
-            self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
-            print(f'{self.texts=}')
-            # Add feedback
-            self.feedback += 1
-        '''
         print('')
 
         """
