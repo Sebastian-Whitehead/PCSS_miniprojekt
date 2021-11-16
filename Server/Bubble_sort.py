@@ -1,5 +1,6 @@
 import random
 
+'''
 def countPoints(scores: [int]) -> [int]:
     points = []
     n = max(scores)
@@ -7,6 +8,7 @@ def countPoints(scores: [int]) -> [int]:
         summed = scores.count(x)
         points.append(summed)
     return points
+'''
 
 def bubble_sort(scores):
     #den kigger på de 2 første, finder den højeste værdi og sætter den øverst. Kigger på 2 og 3 og finder den højeste, og til sidst 3 og 4
