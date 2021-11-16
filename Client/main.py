@@ -95,6 +95,7 @@ class StartPage(tk.Frame, tkinterApp):
         # Get written IP in IP input
         # (Does not do anything at the moment)
         IP = self.IPName.get()
+        print(name, IP)
         # Connect to server with name and IP
         self.client.connectToServer(IP, name)
         # Continue to page 1

@@ -60,20 +60,12 @@ class Server(GameEngine, SendReceiveImage):
                 return print('Old player')
 
         # Set name of player by player input
-        # MISSING
+        playerName = self.request(newPlayer, ['getPlayerName'], 'nameRequest')
+        newPlayer.setName(playerName)
 
         # Add new player to server
         self.players.append(newPlayer)
-        print('New player')
-
-        # Confirm player with a message
-        """
-        # 
-        # Need a listener on the client to work
-        # Use with care
-        message = 'Hi, ' + newPlayer.getName() + '!'
-        self.sendMessage(newPlayer, message, 'message')
-        """
+        print('New player:', newPlayer.name)
 
         # Set player to be game host if there is none
         if not self.getGameHost():

@@ -18,10 +18,18 @@ class Client():
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = 1024
+        self.IP = IP
         self.s.connect((self.host, self.port))
 
         # Start listen for messages from the server
-        self.listen()
+        serverKey = self.listen()
+        serverKey = self.listen()
+
+        print(f'{serverKey=}')
+
+        # Let all other players wait for the game to start
+        if serverKey[0] == 'nameRequest':
+            self.sendMessage('nameRequest', name)
 
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):
@@ -83,9 +91,9 @@ class Client():
             serverMessage = json.loads(package[serverKey].decode("utf-8"))
 
             if serverKey:
-                print(serverKey, '->', serverMessage)
+                print('ServerKey:', serverKey, '->', serverMessage)
                 # Return key and message tuple
-                return (serverKey, serverMessage)
+                return [serverKey, serverMessage]
 
     # Prompt the player for a reply it can send to the server
     # NOT USED
