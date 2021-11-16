@@ -2,7 +2,6 @@ import numpy as np
 
 from MemeImage import MemeImage
 import Bubble_sort, handleHighScoreList
-import multiprocessing, ctypes, json, random
 import threading as th
 from Player import Player
 
@@ -12,9 +11,6 @@ from Player import Player
   is equal to amount of players in the game
 """
 feedback = 0
-points_lock = multiprocessing.Lock()
-feedback_lock = multiprocessing.Lock()
-
 
 class GameEngine():
     def __init__(self):
@@ -115,20 +111,6 @@ class GameEngine():
             key='imageTextRequest'
         )
         print(f"{self.texts=}")
-
-        '''
-        # Send image to all players
-        for player in self.players:
-            # Request each player
-            print()
-
-            server.sendMessage(player, self.memeImage.getImageName(), 'imageTextRequest')
-            # Append the text to the list
-            self.texts.append(player.ID + ':' + server.listen(player, 'imageTextRequest'))
-            print(f'{self.texts=}')
-            # Add feedback
-            self.feedback += 1
-        '''
         print('')
 
         """

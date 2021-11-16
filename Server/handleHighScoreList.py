@@ -87,7 +87,7 @@ if __name__ == '__main__':
         ['Tonko', 10123],
         ['Rebecca', -1051],
         ['Charlotte', 13],
-        ['Sebsastian', 12],
+        ['Sebastian', 12],
         ['Tobias', 15]
     ], False)
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         ['Tonko', 154],
         ['Rebecca', -42],
         ['Charlotte', 45],
-        ['Sebsastian', 56],
+        ['Sebastian', 56],
         ['Tobias', 483]
     ], False)
 
