@@ -19,7 +19,12 @@ class Client():
         self.host = socket.gethostname()
         self.port = 1024
         self.IP = IP
-        self.s.connect((self.IP, self.port))
+
+        if not self.IP:
+            print("**IP FIELD IS BLANK --> CONNECTING TO LOCAL HOST!**")
+            self.s.connect((self.host, self.port))
+        else:
+            self.s.connect((self.IP, self.port))
 
         # Start listen for messages from the server
         serverKey = self.listen()
