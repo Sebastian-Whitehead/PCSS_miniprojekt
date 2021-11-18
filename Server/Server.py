@@ -38,6 +38,9 @@ class Server(GameEngine, SendReceiveImage):
 
         # While Listening
         while True:
+
+            print('Listening for players')
+
             # Server listens for players joining the server
             player = Player()
             player.c, player.addr = self.s.accept()
