@@ -1,5 +1,5 @@
 import numpy as np
-
+import pickle
 from MemeImage import MemeImage
 import Bubble_sort, handleHighScoreList
 import threading as th
@@ -43,10 +43,27 @@ class GameEngine():
     def isGameReady(self, server) -> bool:
         if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            gameStart = self.sendMessage(self.getGameHost(), 'Request game to start', 'startGameRequest')
-            print(f'{gameStart=}')
-            if gameStart == 'True':  self.startGame(server)  # Start the game
-            print('Waiting to start')
+            self.sendMessage(self.getGameHost(), 'Request game to start', 'startGameRequest')
+
+            # Getting a reply from the player
+            receive = self.getGameHost().c.recv(1024)
+            if receive is not None:
+                print(receive)
+                # Load the packages with pickle
+                package = pickle.loads(receive)
+                # Print package to console
+                print(package)
+                # Decode package using key
+                clientMessage = package['startGameRequest'].decode()
+                # Print message and key to console
+                print('Game host', 'sent:', 'startGameRequest', '->', clientMessage)
+                # Return message
+                gameStart = clientMessage
+
+                print('Listening for start game..')
+                print(f'{gameStart=}')
+                if gameStart == 'True':
+                    self.startGame(server)  # Start the game
 
     def sendListen(self, server, player, answer, message, key):
         print(f">>>>>>> {player =}, {message =}, {key =}")

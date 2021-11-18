@@ -37,9 +37,10 @@ class Server(GameEngine, SendReceiveImage):
         print('Listening..')
 
         # While Listening
+
         while True:
 
-            print('Listening for players')
+            print('Listening for players..')
 
             # Server listens for players joining the server
             player = Player()
@@ -52,6 +53,8 @@ class Server(GameEngine, SendReceiveImage):
 
             # Game engine running
             self.gameRunning(self)
+
+            self.run()
 
     # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
