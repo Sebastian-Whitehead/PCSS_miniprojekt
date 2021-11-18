@@ -62,14 +62,14 @@ class StartPage(tk.Frame, tkinterApp):
         label = ttk.Label(self, text="Start Kenneth Kasse", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
-        label = ttk.Label(self, text="Navn hmm?")
+        label = ttk.Label(self, text="Input your name")
         label.grid(row=1, column=0, padx=10, pady=10)
 
         # Name of player
         self.PName: Entry = tk.Entry(self)
         self.PName.grid(row=2, column=0, padx=10, pady=10)
 
-        label = ttk.Label(self, text="IP hmm?")
+        label = ttk.Label(self, text="IP")
         label.grid(row=3, column=0, padx=10, pady=10)
 
         # IP
@@ -119,7 +119,7 @@ class Page1(tk.Frame, tkinterApp):
         label = ttk.Label(self, text="", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
-        label = ttk.Label(self, text="Venter på start", font=LARGEFONT)
+        label = ttk.Label(self, text="Waiting to start", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
         button1 = ttk.Button(self, text="Return to start",
@@ -179,7 +179,7 @@ class Page2(tk.Frame):
         label = ttk.Label(self, text="", font=LARGEFONT)
         label.grid(row=0, column=1, padx=10, pady=10)
 
-        label = ttk.Label(self, text="Write a funny harald meme", font=LARGEFONT)
+        label = ttk.Label(self, text="Write a funny meme", font=LARGEFONT)
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
@@ -247,7 +247,7 @@ class Page3(tk.Frame):
             # If horizontal - places images in a 2 x 2 grid
 
             # Make the 'vote' button
-            button1 = ttk.Button(self, text="Yass queen " + str(x))
+            button1 = ttk.Button(self, text="Vote" + str(x))
             button1.value = x
             button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
 
@@ -337,7 +337,7 @@ class Page4(tk.Frame):
             label = ttk.Label(self, text=player[1], font=LARGEFONT)
             label.grid(row=x + 1, column=2, padx=10, pady=10)
 
-        button1 = ttk.Button(self, text="m'ka' goodnight",
+        button1 = ttk.Button(self, text="New Game",
                              command=lambda: controller.show_frame(StartPage))
         button1.grid(row=players + 2, column=1, padx=10, pady=10)
 
