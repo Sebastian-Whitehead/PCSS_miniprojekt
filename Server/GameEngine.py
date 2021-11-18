@@ -43,8 +43,10 @@ class GameEngine():
     def isGameReady(self, server) -> bool:
         if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
-            gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
+            gameStart = self.sendMessage(self.getGameHost(), 'Request game to start', 'startGameRequest')
+            print(f'{gameStart=}')
             if gameStart == 'True':  self.startGame(server)  # Start the game
+            print('Waiting to start')
 
     def sendListen(self, server, player, answer, message, key):
         print(f">>>>>>> {player =}, {message =}, {key =}")
@@ -117,8 +119,8 @@ class GameEngine():
     # Send all memes to all players
     # Request each player for a favorite meme
     def imageScoreRequest(self, server):
-        print("=========== REQUESTING SCORE =============")
         if len(self.players) <= self.feedback and self.status == 'imageTextRequest':
+            print("=========== REQUESTING SCORE =============")
             print('All players has send their image text')
             self.setStatus('imageScoreRequest')
 
@@ -138,10 +140,10 @@ class GameEngine():
     # Handle favorite memes and calculate a score
     # Send message to all player who the winner is, and what image it is
     def handlingScore(self, server):
-        print("=========== HANDELING SCORE =============")
-        print(f"nr of player= {len(self.players)}, feedback = {self.feedback}, {self.status}")
 
         if len(self.players) <= self.feedback and self.status == 'imageScoreRequest':
+            print("=========== HANDELING SCORE =============")
+            print(f"nr of player= {len(self.players)}, feedback = {self.feedback}, {self.status}")
             self.setStatus('handlingScore')
 
             # Count points
