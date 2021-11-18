@@ -92,6 +92,8 @@ class StartPage(tk.Frame, tkinterApp):
     def fetchStartPage(self, controller):
         # Get written name in name input
         name = self.PName.get()
+        # Code that doesnt continue the program if name field is empty.
+        assert name != ""
         # Get written IP in IP input
         # (Does not do anything at the moment)
         IP = self.IPName.get()
@@ -206,6 +208,7 @@ class Page2(tk.Frame):
     def fetchPage2(self, controller):
         # Get written text input to image
         userInputText = self.MemeText.get()
+        assert userInputText != ""
         # Send the text input to the server
         self.client.sendMessage('imageTextRequest', userInputText)
 
@@ -247,7 +250,7 @@ class Page3(tk.Frame):
             # If horizontal - places images in a 2 x 2 grid
 
             # Make the 'vote' button
-            button1 = ttk.Button(self, text="Vote" + str(x))
+            button1 = ttk.Button(self, text="Vote")
             button1.value = x
             button1.configure(command=lambda button=button1: self.buttonCheck(button, controller))
 
