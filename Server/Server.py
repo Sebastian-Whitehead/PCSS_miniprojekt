@@ -37,19 +37,19 @@ class Server(GameEngine, SendReceiveImage):
         print('Listening..')
 
         # While Listening
-
         while True:
 
             print('Listening for players..')
 
             # Server listens for players joining the server
             player = Player()
-            player.c, player.addr = self.s.accept()
-            # Respond acceptance to client
-            print('Got connection from:', player.addr)
-            self.sendMessage(player, 'Thank you for connecting.', 'accept')
-            # Handle new player to server
-            self.clientJoined(player)
+            if test := self.s.accept() is not None:
+                player.c, player.addr = test
+                # Respond acceptance to client
+                print('Got connection from:', player.addr)
+                self.sendMessage(player, 'Thank you for connecting.', 'accept')
+                # Handle new player to server
+                self.clientJoined(player)
 
             # Game engine running
             self.gameRunning(self)
