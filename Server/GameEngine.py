@@ -12,6 +12,7 @@ from Player import Player
 """
 feedback = 0
 
+
 class GameEngine():
     def __init__(self):
         # multiprocessing.Process.__init__(self)
@@ -43,20 +44,14 @@ class GameEngine():
         if self.minPlayers <= len(self.players) and self.host and self.status == 'inLobby':
             print('Game ready. Request host (' + self.getGameHost().getName() + ') to start')
             gameStart = self.request(self.getGameHost(), 'none', 'startGameRequest')
-            if gameStart == 'True':
-                # Start the game
-                self.startGame(server)
-            else:
-                # Keep listening for host
-                self.isGameReady(server)
-        return False
+            if gameStart == 'True':  self.startGame(server)  # Start the game
 
     def sendListen(self, server, player, answer, message, key):
         print(f">>>>>>> {player =}, {message =}, {key =}")
         server.sendMessage(player, message, key)  # Send message to server
         value = server.listen(player, key)
 
-        #if value.isdigit(): value = int(value)
+        # if value.isdigit(): value = int(value)
         if key == 'imageScoreRequest':
             answer[int(value)] += 1
 
@@ -70,10 +65,10 @@ class GameEngine():
         print("=============== STARTING THREAD =================")
         returnedData = []
         t = {}
-        if key == 'imageTextRequest': ans = ['' for x in range(len(self.players))]
-        else: ans = [0] * len(self.players)
-
-
+        if key == 'imageTextRequest':
+            ans = ['' for x in range(len(self.players))]
+        else:
+            ans = [0] * len(self.players)
 
         # Request score from players
         for pos, player in enumerate(self.players):
@@ -153,8 +148,8 @@ class GameEngine():
             print('Handling score..')
             print('All points:', self.points)
 
-            #countedPoints = Bubble_sort.countPoints(self.points)
-            #print(f'{countedPoints=}')
+            # countedPoints = Bubble_sort.countPoints(self.points)
+            # print(f'{countedPoints=}')
 
             # Zip score with name
             playerNames = [player.name for player in self.players]
