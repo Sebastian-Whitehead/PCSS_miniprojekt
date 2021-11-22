@@ -5,10 +5,13 @@ from Client import Client
 from edit_image import edit_image, resizeImage
 from handleHighScoreList import *
 
-LARGEFONT = ("Verdana", 35)
+LARGEFONT = ("Verdana", 35)  # Font
 
+""" # Manufactured data (start) #
 players = 4
 player_names = ["Rebecca", "Charlotte", "Tonko", "Tobias"]
+# Manufactured data (end) # 
+"""
 
 
 class tkinterApp(tk.Tk):
@@ -90,26 +93,18 @@ class StartPage(tk.Frame, tkinterApp):
 
     # Connect to server button handle
     def fetchStartPage(self, controller):
-        # Get written name in name input
-        name = self.PName.get()
-        # Code that doesnt continue the program if name field is empty.
-        assert name != ""
-        # Get written IP in IP input
-        # (Does not do anything at the moment)
-        IP = self.IPName.get()
+        name = self.PName.get()  # Get written name in name input
+        assert name != ""  # Code that doesnt continue the program if name field is empty.
+        IP = self.IPName.get()  # Get written IP in IP input
         print(name, IP)
-        # Connect to server with name and IP
-        self.client.connectToServer(IP, name)
-        # Continue to page 1
-        controller.show_frame(Page1)
+        self.client.connectToServer(IP, name)  # Connect to server with name and IP
+        controller.show_frame(Page1)  # Continue to page 1
 
         # Listen for server
         serverKey = self.client.listen()
-        # Let the host listen for game start request
-        if serverKey[0] == 'startGameRequest':
+        if serverKey[0] == 'startGameRequest':  # Let the host listen for game start request
             controller.show_frame(hostPage)
-        # Let all other players wait for the game to start
-        elif serverKey[0] == 'imageTextRequest':
+        elif serverKey[0] == 'imageTextRequest':  # Let all other players wait for the game to start
             controller.show_frame(Page2)
 
 
@@ -164,12 +159,10 @@ class hostPage(tk.Frame, tkinterApp):
     # Start game button handle
     def fetchPage1(self, controller):
         print('Starting game')
-        # Tell server to start game
-        self.client.sendMessage(key='startGameRequest', message='True')
+        self.client.sendMessage(key='startGameRequest', message='True')  # Tell server to start game
         serverKey = self.client.listen()
         self.client.memeImage = serverKey[1]
-        # Continue to next page (page 2)
-        controller.show_frame(Page2)
+        controller.show_frame(Page2)  # Continue to next page (page 2)
 
 
 # Write funny haha meme text page
@@ -206,20 +199,15 @@ class Page2(tk.Frame):
 
     # Submit text button handle
     def fetchPage2(self, controller):
-        # Get written text input to image
-        userInputText = self.MemeText.get()
+        userInputText = self.MemeText.get()  # Get written text input to image
         assert userInputText != ""
-        # Send the text input to the server
-        self.client.sendMessage('imageTextRequest', userInputText)
+        self.client.sendMessage('imageTextRequest', userInputText)  # Send the text input to the server
 
         # Let the host listen for score giving state
-        # EKSTRA LISTEN DON NO WHY Can maybe be deleted
-        # serverKey = self.client.listen()
-        # print(serverKey)
         serverKey = self.client.listen()
         if serverKey[0] == 'imageScoreRequest':
-            # Get all players texts
-            imageTexts = serverKey[1]
+            imageTexts = serverKey[1]  # Get all players texts
+
             # Make meme for each text input into the image
             for text in imageTexts:
                 print(text)
@@ -228,9 +216,8 @@ class Page2(tk.Frame):
 
             controller.show_frame(Page3)
 
-    # Voting screen leggoooo
 
-
+# Voting screen leggoooo
 class Page3(tk.Frame):
     def __init__(self, parent, controller, client):
         tk.Frame.__init__(self, parent)
@@ -297,8 +284,7 @@ class Page3(tk.Frame):
 
         if serverKey[0] == 'packedScores':
             self.client.packedScores = serverKey[1]
-            # Go to page 4 (Score board)
-            controller.show_frame(Page4)
+            controller.show_frame(Page4)  # Go to page 4 (Score board)
 
         """
             print(f'{self.client.sortedNames=}')
@@ -314,6 +300,7 @@ class Page3(tk.Frame):
         if hasattr(self.client, 'sortedNames') and hasattr(self.client, 'sortedPoints'):
             self.client.packedScores = list(zip(self.client.sortedNames, self.client.sortedPoints))
         """
+
 
 # Score screen
 class Page4(tk.Frame):
