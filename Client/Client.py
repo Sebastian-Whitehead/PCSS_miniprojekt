@@ -11,6 +11,7 @@ class Client():
         self.memeImage = 'work.jpg'
         self.memelist = []
         self.winner = -1
+        self.totalExpectedPlayers = 1
 
     # Connect the client to the server
     def connectToServer(self, IP, name):
@@ -32,9 +33,20 @@ class Client():
 
         print(f'{serverKey=}')
 
+
+
         # Let all other players wait for the game to start
         if serverKey[0] == 'nameRequest':
             self.sendMessage('nameRequest', name)
+
+        # TODO: PROMT PLAYER FOR NUNBER
+        serverKey = self.listen()
+        print(f'{serverKey=}')
+
+        if serverKey[0] == 'totalPlayersRequest':
+            self.sendMessage('totalPlayersRequest', str(self.totalExpectedPlayers))
+
+        #TODO: PROMT PLAYER FOR GAME START
 
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):

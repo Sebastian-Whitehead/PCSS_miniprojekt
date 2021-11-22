@@ -23,6 +23,7 @@ class Server(GameEngine, SendReceiveImage):
         self.s.bind((self.host, self.port))
         print(self.s, 'Server is Running..')
         print('')
+        self.expectedNumberOfPlayers = ''
 
         # Setup game in lobby
         self.status = 'inLobby'
@@ -33,6 +34,8 @@ class Server(GameEngine, SendReceiveImage):
 
     # Server Starts Listening for players joining the server
     def run(self):
+
+
         self.s.listen(5)
         print('Listening..')
 
@@ -50,6 +53,16 @@ class Server(GameEngine, SendReceiveImage):
             # Handle new player to server
             self.clientJoined(player)
 
+            for i in range(int(self.expectedNumberOfPlayers)-1):
+                print(f'rep {i}')
+                player = Player()
+                player.c, player.addr = self.s.accept()
+                # Respond acceptance to client
+                print('Got connection from:', player.addr)
+                self.sendMessage(player, 'Thank you for connecting.', 'accept')
+                # Handle new player to server
+                self.clientJoined(player)
+
             # Game engine running
             self.gameRunning(self)
 
@@ -64,6 +77,7 @@ class Server(GameEngine, SendReceiveImage):
                 return print('Old player')
 
         # Set name of player by player input
+
         playerName = self.request(newPlayer, ['getPlayerName'], 'nameRequest')
         newPlayer.setName(playerName)
 
@@ -75,6 +89,10 @@ class Server(GameEngine, SendReceiveImage):
         if not self.getGameHost():
             self.setGameHost(newPlayer)
             print('Host:', newPlayer.getName())
+
+            print('requesting expected number of player from host')
+            self.expectedNumberOfPlayers = self.request(self.getGameHost(), [None], 'totalPlayersRequest')
+            print(f'{self.expectedNumberOfPlayers =}')
 
         print('')
 

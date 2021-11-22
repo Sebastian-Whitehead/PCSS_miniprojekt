@@ -148,30 +148,19 @@ class GameEngine():
 
             # Count points
             print('Handling score..')
-            print('All points:', self.points)
-
-            # countedPoints = Bubble_sort.countPoints(self.points)
-            # print(f'{countedPoints=}')
+            #print('All points:', self.points)
 
             # Zip score with name
             playerNames = [player.name for player in self.players]
-            # playerNames = [player.name for player in self.players]
             packedScores = list(zip(playerNames, self.points))
-            print(f'{packedScores=}')
+            #print(f'{packedScores=}')
 
             # Save to all time high score list
             handleHighScoreList.saveScores('allTimeHighScore.txt', packedScores)
 
             # Sort scores
             sortedPoints = Bubble_sort.bubble_sort(packedScores)
-            print(f'{sortedPoints=}')
-
-            """
-            sortedNames = [player[0] for player in sortedPoints]
-            print(f'{sortedNames=}')
-            sortedPoints = [player[1] for player in sortedPoints]
-            print(f'{sortedPoints=}')
-            """
+            #print(f'{sortedPoints=}')
 
             # Sending winner to all players
             for player in self.players:
@@ -184,7 +173,6 @@ class GameEngine():
             print('')
             self.memeImage.newRandomImage()
             self.setStatus('inLobby')
-            # return server.run()
 
     # Set the status and reset feedback
     # Feedback will activate the next step of the game,
