@@ -10,27 +10,18 @@ from Player import Player
 # Will continue to next step of the game, when Feedback
   is equal to amount of players in the game
 """
-feedback = 0
 
 
 class GameEngine():
     def __init__(self):
         # multiprocessing.Process.__init__(self)
-        # All players that are currently on the server (Keeps on disconnect)
-        self.players = []
-        # Meme image (Not implemented)
-        self.memeImage = MemeImage()
-        # Text from all players
-        self.texts = []
-        # Points given from all players
-        self.points = []
-
-        # Minimum players on the server before the game can start
-        self.minPlayers = 1
-        # The game host
-        self.gameHost = False
-        # Set state of program
-        self.setStatus('booting')
+        self.players = []  # All players that are currently on the server (Keeps on disconnect)
+        self.memeImage = MemeImage()  # Meme image (Not implemented)
+        self.texts = []  # Text from all players
+        self.points = []  # Points given from all players
+        self.minPlayers = 1  # Minimum players on the server before the game can start
+        self.gameHost = False  # The game host
+        self.setStatus('booting')  # Set state of program
 
     # Run the Game Engine on the server
     def gameRunning(self, server):
