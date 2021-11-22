@@ -3,7 +3,6 @@ from tkinter import ttk, Entry
 from PIL import Image, ImageTk
 from Client import Client
 from edit_image import edit_image, resizeImage
-from handleHighScoreList import *
 
 LARGEFONT = ("Verdana", 35)  # Font
 
@@ -379,14 +378,21 @@ class Page4(tk.Frame):
             label = ttk.Label(self, text=player[1], font=LARGEFONT)
             label.grid(row=x + 1, column=2, padx=10, pady=10)
 
+        """
+        # New game button
         button1 = ttk.Button(self, text="New Game",
                              command=lambda: controller.show_frame(StartPage))
         button1.grid(row=len(self.client.packedScores) + 2, column=1, padx=10, pady=10)
+        """
 
+        """
+        # High score button
         button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
         button2.grid(row=len(self.client.packedScores) + 3, column=1, padx=10, pady=10)
+        """
 
-
+"""
+High Score page
 class HighScorePage(tk.Frame):
 
     def __init__(self, parent, controller, client):
@@ -395,7 +401,7 @@ class HighScorePage(tk.Frame):
 
         label = ttk.Label(self, text="HIGH SCORES", font=LARGEFONT)
         label.grid(row=0, column=0, padx=10, pady=10)
-        scores = loadScores("allTimeHighScore.txt")
+        # REQUEST HIGH SCORE FROM SERVER (MISSING)
         self.showhighscore(scores)
 
         button1 = ttk.Button(self, text="Back", command=lambda: controller.show_frame(Page4))
@@ -407,7 +413,7 @@ class HighScorePage(tk.Frame):
                 break
             label = ttk.Label(self, text=score, font=10)
             label.grid(row=x + 1, column=0, padx=10, pady=10)
-
+"""
 
 # Driver Code
 if __name__ == '__main__':

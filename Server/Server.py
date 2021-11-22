@@ -1,7 +1,6 @@
 import socket, pickle, json, threading
 from Player import Player
 from GameEngine import GameEngine
-from SendReceiveImage import SendReceiveImage
 
 """ MISSING:
 - Player disconnect
@@ -10,7 +9,7 @@ from SendReceiveImage import SendReceiveImage
 
 
 # Server class. Connects with client
-class Server(GameEngine, SendReceiveImage):
+class Server(GameEngine):
 
     # Initital Function Starts Server & Game Lobby
     def __init__(self, port):
