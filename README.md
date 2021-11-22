@@ -15,4 +15,5 @@ Make amazingly funny memes with your friends and pick the winner over them all!!
 
 - A Jack-box-(inspired) party game on computer
 - Using networking, multithreading, Python
-- Packages: PIL, tkinter, socket, pickle, json
+- External Packages: PIL, tkinter, openCV-python, numpy
+- Standard Packages: Socket, Pickle, json, multiprocessing

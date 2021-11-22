@@ -7,9 +7,9 @@ class Player():
 
     def __init__(self):
         #threading.Thread.__init__(self)
-        self.name = 'None yet'
         self.ID = str(Player.size)
         Player.size += 1
+        self.name = 'None yet' + self.ID
 
     # Setter for player name
     def setName(self, name: str):

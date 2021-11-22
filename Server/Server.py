@@ -28,52 +28,44 @@ class Server(GameEngine, SendReceiveImage):
         self.status = 'inLobby'
         self.feedback = 0
 
-        # Run server and game, start listen
-        self.run()
+        self.run()  # Run server and game, start listen
 
     # Server Starts Listening for players joining the server
     def run(self):
         self.s.listen(5)
         print('Listening..')
 
-        # While Listening
         while True:
+            print('Listening for players..')
+
             # Server listens for players joining the server
             player = Player()
             player.c, player.addr = self.s.accept()
-            # Respond acceptance to client
-            print('Got connection from:', player.addr)
-            self.sendMessage(player, 'Thank you for connecting.', 'accept')
-            # Handle new player to server
-            self.clientJoined(player)
+            print('Got connection from:', player.addr)  # Respond acceptance to client
 
-            # Game engine running
-            self.gameRunning(self)
+            self.sendMessage(player, 'Thank you for connecting.', 'accept')
+            self.clientJoined(player)  # Handle new player to server
+
+            self.gameRunning(self)  # Game engine running
 
     # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
+        """
         # Check if the user is already connected
         for player in self.players:
             if newPlayer.addr == player.addr:
                 # Handle old player connecting again
                 # (Does not do anything at the moment MISSING)
                 return print('Old player')
+        """
 
         # Set name of player by player input
-        # MISSING
+        playerName = self.request(newPlayer, ['getPlayerName'], 'nameRequest')
+        newPlayer.setName(playerName)
 
         # Add new player to server
         self.players.append(newPlayer)
-        print('New player')
-
-        # Confirm player with a message
-        """
-        # 
-        # Need a listener on the client to work
-        # Use with care
-        message = 'Hi, ' + newPlayer.getName() + '!'
-        self.sendMessage(newPlayer, message, 'message')
-        """
+        print('New player:', newPlayer.name)
 
         # Set player to be game host if there is none
         if not self.getGameHost():
@@ -84,44 +76,30 @@ class Server(GameEngine, SendReceiveImage):
 
     # Send message to specified player
     def sendMessage(self, player: Player, message: [str], key: str):
-        # Print message or key to console
-        if message == 'none' or type(message) != str:
-            print('Sending:', '"' + key + '"', 'to', player.getName())
-        else:
-            print('Sending:', '"' + message + '"', 'to', player.getName())
-        # Encode message to json
-        message = json.dumps(message).encode()
-        # Packages the message with a matching key
-        package = {key: message}
-        # Send message to client with socket
-        player.c.send(pickle.dumps(package))
+        print(f'Sending: "{key}" to {player.getName()}')  # Print message or key to console
+        if message != 'none' or type(message) == str:
+            print(f'Message: "{message}"')
+        message = json.dumps(message).encode()  # Encode message to json
+        package = {key: message}  # Packages the message with a matching key
+        player.c.send(pickle.dumps(package))  # Send message to client with socket
 
     # Send data request/ Response to client
     def request(self, player: Player, message: [str], key: str) -> str:
-        # Send message to client using method
-        self.sendMessage(player, message, key)
-        # Listen for reply from client with same key as sent
-        return self.listen(player, key)
+        self.sendMessage(player, message, key)  # Send message to client using method
+        return self.listen(player, key)  # Listen for reply from client with same key as sent
 
     # Listen for response to data request
     def listen(self, player: Player, key: str):
-        # Listen for reply from client
-        self.s.listen(5)
+        self.s.listen(5)  # Listen for reply from client
         print('Listening..')
         while True:
-            # Getting a reply from the player
-            receive = player.c.recv(1024)
+            receive = player.c.recv(1024)  # Getting a reply from the player
             if receive is not None:
-                # Load the packages with pickle
-                package = pickle.loads(receive)
-                # Print package to console
-                print(package)
-                # Decode package using key
-                clientMessage = package[key].decode()
-                # Print message and key to console
-                print(player.getName(), 'sent:', key, '->', clientMessage)
-                # Return message
-                return clientMessage
+                package = pickle.loads(receive)  # Load the packages with pickle
+                print(package)  # Print package to console
+                clientMessage = package[key].decode()  # Decode package using key
+                print(player.getName(), 'sent:', key, '->', clientMessage)  # Print message and key to console
+                return clientMessage  # Return message
 
     # Setter for game host role
     def setGameHost(self, player: Player):
