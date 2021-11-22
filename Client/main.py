@@ -109,6 +109,15 @@ class StartPage(tk.Frame, tkinterApp):
         if serverKey[0] == 'startGameRequest':  # Let the host listen for game start request
             controller.show_frame(hostPage)
         elif serverKey[0] == 'imageTextRequest':  # Let all other players wait for the game to start
+
+            # Tell server to start game
+            self.client.sendMessage(key='startGameRequest', message='True')
+            serverKey = self.client.listen()
+            print('First serverKey', serverKey)
+            if serverKey[0] == 'startGameRequest':
+                serverKey = self.client.listen()
+                self.client.memeImage = serverKey[1]
+
             controller.show_frame(Page2)
         elif serverKey[0] == 'totalPlayersRequest':
             controller.show_frame(hostPlayerCount)
