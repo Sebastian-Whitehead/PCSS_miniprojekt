@@ -45,7 +45,7 @@ class Server(GameEngine, SendReceiveImage):
 
 
             for i in range(int(self.expectedNumberOfPlayers) - 1):
-                print(f'rep {i}')
+                print(f'rep for player {i + 2}')
                 self.connectPlayer()
 
             # Game engine running
