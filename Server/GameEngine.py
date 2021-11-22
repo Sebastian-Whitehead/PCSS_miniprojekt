@@ -133,7 +133,6 @@ class GameEngine():
 
             # Zip score with name
             playerNames = [player.name for player in self.players]
-            # playerNames = [player.name for player in self.players]
             packedScores = list(zip(playerNames, self.points))
             print(f'{packedScores=}')
 
