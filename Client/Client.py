@@ -35,9 +35,11 @@ class Client():
         if serverKey[0] == 'nameRequest':
             self.sendMessage('nameRequest', name)
 
+    """
     # Request the game host to start the game
     def startGameRequest(self, serverKey: str):
         print('Start game request received')
+    """
 
     # Listens for request or message from the server
     def listen(self) -> tuple:
