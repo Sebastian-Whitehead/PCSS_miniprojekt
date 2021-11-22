@@ -160,7 +160,40 @@ class hostPage(tk.Frame, tkinterApp):
 
     # Start game button handle
     def fetchPage1(self, controller):
-        print('Starting game')
+        controller.show_frame(hostPlayerCount)
+
+# Host page to start the game
+class hostPlayerCount(tk.Frame, tkinterApp):
+    def __init__(self, parent, controller, client):
+        tk.Frame.__init__(self, parent)
+        self.client = client
+
+        label = ttk.Label(self, text="", font=LARGEFONT)
+        label.grid(row=0, column=1, padx=10, pady=10)
+
+        label = ttk.Label(self, text="How many players are you expecting?")
+        label.place(relx=.5, rely=0.05, anchor="c")
+
+        self.PlayerCount: Entry = tk.Entry(self)
+        self.PlayerCount.place(relx=.5, rely=0.1, anchor="c")
+
+        button1 = ttk.Button(self, text="Return to start",
+                             command=lambda: controller.show_frame(StartPage))
+        button1.place(relx=.5, rely=0.15, anchor="c")
+
+        button2 = ttk.Button(self, text="Submit",
+                             command=lambda: self.fetchPage2(controller))
+        button2.place(relx=.5, rely=0.22, anchor="c")
+
+        meme = Image.open('progmeme.png')
+        meme = ImageTk.PhotoImage(meme)
+        meme_lbl = tk.Label(self, image=meme)
+        meme_lbl.image = meme
+        meme_lbl.place(relx=.5, rely=0.7, anchor="c")
+
+    # Start game button handle
+    def fetchPage2(self, controller):
+        TotalPlayerCount = self.PlayerCount.get()
         # Tell server to start game
         self.client.sendMessage(key='startGameRequest', message='True')
         serverKey = self.client.listen()
