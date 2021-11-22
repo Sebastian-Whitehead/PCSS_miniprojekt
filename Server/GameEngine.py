@@ -110,12 +110,6 @@ class GameEngine():
         print(f"{self.texts=}")
         print('')
 
-        """
-        # Send image to all players
-        self.texts = self.startThread(server, ctypes.c_char_p, self.memeImage.getImageName(), 'imageTextRequest')
-        print(f'{self.points}', end='\n\n')
-        """
-
     # Send all memes to all players
     # Request each player for a favorite meme
     def imageScoreRequest(self, server):
@@ -165,13 +159,6 @@ class GameEngine():
             # Sort scores
             sortedPoints = Bubble_sort.bubble_sort(packedScores)
             print(f'{sortedPoints=}')
-
-            """
-            sortedNames = [player[0] for player in sortedPoints]
-            print(f'{sortedNames=}')
-            sortedPoints = [player[1] for player in sortedPoints]
-            print(f'{sortedPoints=}')
-            """
 
             # Sending winner to all players
             for player in self.players:
