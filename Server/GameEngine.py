@@ -14,7 +14,6 @@ from Player import Player
 
 class GameEngine():
     def __init__(self):
-        # multiprocessing.Process.__init__(self)
         self.players = []  # All players that are currently on the server (Keeps on disconnect)
         self.memeImage = MemeImage()  # Meme image (Not implemented)
         self.texts = []  # Text from all players
@@ -51,8 +50,7 @@ class GameEngine():
         elif key == 'imageTextRequest':
             answer[int(player.ID)] = f"{player.ID}:{value}"
 
-        # Add feedback to continue
-        self.feedback += 1
+        self.feedback += 1  # Add feedback to continue
 
     def startThread(self, server, message, key):
         print("=============== STARTING THREAD =================")
@@ -75,8 +73,6 @@ class GameEngine():
         for pos in t:  # After all threads are started begin to join the threads 1 by one
             t[pos].join()  # Wait for thread to complete then join
             print(f'{ans[:]}, {type(ans)=}')
-
-        # self.feedback += FB  # transfer the variables to the corresponding local definitions.
 
         returnedData.extend(ans)
         # print(f'{self.feedback=}, {self.points=}, {FB=}')
@@ -135,9 +131,6 @@ class GameEngine():
             print('Handling score..')
             print('All points:', self.points)
 
-            # countedPoints = Bubble_sort.countPoints(self.points)
-            # print(f'{countedPoints=}')
-
             # Zip score with name
             playerNames = [player.name for player in self.players]
             # playerNames = [player.name for player in self.players]
@@ -154,7 +147,6 @@ class GameEngine():
             # Sending winner to all players
             for player in self.players:
                 server.sendMessage(player, sortedPoints, 'packedScores')
-                # server.sendMessage(player, sortedPoints, 'sortedPoints')
             print('')
 
             # Request new game
@@ -162,7 +154,6 @@ class GameEngine():
             print('')
             self.memeImage.newRandomImage()
             self.setStatus('inLobby')
-            # return server.run()
 
     # Set the status and reset feedback
     # Feedback will activate the next step of the game,
