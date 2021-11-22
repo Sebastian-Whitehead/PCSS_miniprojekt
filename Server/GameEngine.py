@@ -10,17 +10,27 @@ from Player import Player
 # Will continue to next step of the game, when Feedback
   is equal to amount of players in the game
 """
+feedback = 0
 
 
 class GameEngine():
     def __init__(self):
-        self.players = []  # All players that are currently on the server (Keeps on disconnect)
-        self.memeImage = MemeImage()  # Meme image (Not implemented)
-        self.texts = []  # Text from all players
-        self.points = []  # Points given from all players
-        self.minPlayers = 1  # Minimum players on the server before the game can start
-        self.gameHost = False  # The game host
-        self.setStatus('booting')  # Set state of program
+        # multiprocessing.Process.__init__(self)
+        # All players that are currently on the server (Keeps on disconnect)
+        self.players = []
+        # Meme image (Not implemented)
+        self.memeImage = MemeImage()
+        # Text from all players
+        self.texts = []
+        # Points given from all players
+        self.points = []
+
+        # Minimum players on the server before the game can start
+        self.minPlayers = 1
+        # The game host
+        self.gameHost = False
+        # Set state of program
+        self.setStatus('booting')
 
     # Run the Game Engine on the server
     def gameRunning(self, server):
@@ -50,7 +60,8 @@ class GameEngine():
         elif key == 'imageTextRequest':
             answer[int(player.ID)] = f"{player.ID}:{value}"
 
-        self.feedback += 1  # Add feedback to continue
+        # Add feedback to continue
+        self.feedback += 1
 
     def startThread(self, server, message, key):
         print("=============== STARTING THREAD =================")
@@ -74,6 +85,8 @@ class GameEngine():
             t[pos].join()  # Wait for thread to complete then join
             print(f'{ans[:]}, {type(ans)=}')
 
+        # self.feedback += FB  # transfer the variables to the corresponding local definitions.
+
         returnedData.extend(ans)
         # print(f'{self.feedback=}, {self.points=}, {FB=}')
         # print(f'{ans[:]=}, {self.points=}, {FB=}')
@@ -96,6 +109,12 @@ class GameEngine():
         )
         print(f"{self.texts=}")
         print('')
+
+        """
+        # Send image to all players
+        self.texts = self.startThread(server, ctypes.c_char_p, self.memeImage.getImageName(), 'imageTextRequest')
+        print(f'{self.points}', end='\n\n')
+        """
 
     # Send all memes to all players
     # Request each player for a favorite meme
@@ -129,23 +148,24 @@ class GameEngine():
 
             # Count points
             print('Handling score..')
-            print('All points:', self.points)
+            #print('All points:', self.points)
 
             # Zip score with name
             playerNames = [player.name for player in self.players]
             packedScores = list(zip(playerNames, self.points))
-            print(f'{packedScores=}')
+            #print(f'{packedScores=}')
 
             # Save to all time high score list
             handleHighScoreList.saveScores('allTimeHighScore.txt', packedScores)
 
             # Sort scores
             sortedPoints = Bubble_sort.bubble_sort(packedScores)
-            print(f'{sortedPoints=}')
+            #print(f'{sortedPoints=}')
 
             # Sending winner to all players
             for player in self.players:
                 server.sendMessage(player, sortedPoints, 'packedScores')
+                # server.sendMessage(player, sortedPoints, 'sortedPoints')
             print('')
 
             # Request new game
