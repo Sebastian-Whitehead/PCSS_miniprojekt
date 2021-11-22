@@ -41,31 +41,26 @@ class Server(GameEngine, SendReceiveImage):
 
         # While Listening
         while True:
+            self.connectPlayer()
 
-            print('Listening for players..')
-
-            # Server listens for players joining the server
-            player = Player()
-            player.c, player.addr = self.s.accept()
-            # Respond acceptance to client
-            print('Got connection from:', player.addr)
-            self.sendMessage(player, 'Thank you for connecting.', 'accept')
-            # Handle new player to server
-            self.clientJoined(player)
 
             for i in range(int(self.expectedNumberOfPlayers)-1):
                 print(f'rep {i}')
-                player = Player()
-                player.c, player.addr = self.s.accept()
-                # Respond acceptance to client
-                print('Got connection from:', player.addr)
-                self.sendMessage(player, 'Thank you for connecting.', 'accept')
-                # Handle new player to server
-                self.clientJoined(player)
+                self.connectPlayer()
 
             # Game engine running
             self.gameRunning(self)
 
+    def connectPlayer(self,):
+        print('Listening for player..')
+        # Server listens for players joining the server
+        player = Player()
+        player.c, player.addr = self.s.accept()
+        # Respond acceptance to client
+        print('Got connection from:', player.addr)
+        self.sendMessage(player, 'Thank you for connecting.', 'accept')
+        # Handle new player to server
+        self.clientJoined(player)
 
     # Player sends connect message, Check if they are a new player
     def clientJoined(self, newPlayer):
