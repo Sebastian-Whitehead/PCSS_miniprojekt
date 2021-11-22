@@ -55,3 +55,16 @@ def promptReply(self, key: str, UIMessage: str):
     self.sendMessage(key, message)
 """
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Points counting bubble sort ------
+'''
+def countPoints(scores: [int]) -> [int]:
+    points = []
+    n = max(scores)
+    for x in range(n):
+        summed = scores.count(x)
+        points.append(summed)
+    return points
+'''
+
+- - - -
