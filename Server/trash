@@ -1,0 +1,57 @@
+- - - - - - - - CLIENT - - - - - - - -
+
+"""
+# Random image sent to player. Prompt player for a text to put to the image -> image with text
+# NOT USED
+def imageTextRequest(self, serverKey: str, imageText: str):
+    # Receive and decrypt image
+    frame_data = self.receiveImage(self.s)
+    frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+    # Show image
+    # cv2.imshow('ImageWindow', frame)
+    # cv2.waitKey(0)
+
+    # Request player for text to put onto the image
+    # imageText = input(serverKey, 'Type text to image')
+    if 0 < len(imageText):
+        self.meme = makeImageToMeme(frame, imageText)  # Make meme using the text and image
+        self.sendImage(self.meme, self.s)  # Send meme to server
+"""
+
+"""
+# Show all memes to the player and ask for a personal favorite
+# NOT USED
+def imageScoreRequest(self, serverKey: str, serverMessage: str):
+    # Receive all memes from the server
+    for i in range(0, int(serverMessage) + 1):
+        frame_data = self.receiveImage(self.s)
+        frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+        self.memes.append(frame)
+
+    # Show all memes
+    for pos, meme in enumerate(self.memes):
+        if meme is not self.meme:  # Filter the players own meme
+            pass
+
+    # Ask player for a favorite meme
+    self.promptReply(serverKey, 'Type in the number of the best meme')
+"""
+
+"""
+# Show message to player
+# NOT USED
+def message(self, serverMessage: str):
+    print(serverMessage)
+    print('')
+"""
+
+"""
+# Prompt the player for a reply it can send to the server
+# NOT USED
+def promptReply(self, key: str, UIMessage: str):
+    # Prompts the user for a reply
+    message = input(UIMessage + ': ')
+    # Send key and message to the server
+    self.sendMessage(key, message)
+"""
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
