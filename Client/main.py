@@ -164,8 +164,17 @@ class hostPage(tk.Frame, tkinterApp):
 
     # Start game button handle
 
-        def fetchPage1(self, controller):
-            controller.show_frame(hostPlayerCount)
+    def fetchPage1(self, controller):
+
+        # Tell server to start game
+        self.client.sendMessage(key='startGameRequest', message='True')
+        serverKey = self.client.listen()
+        print('First serverKey', serverKey)
+        if serverKey[0] == 'startGameRequest':
+            serverKey = self.client.listen()
+            self.client.memeImage = serverKey[1]
+
+        controller.show_frame(Page2)
 
     # Host page to start the game
 class hostPlayerCount(tk.Frame, tkinterApp):
@@ -201,10 +210,6 @@ class hostPlayerCount(tk.Frame, tkinterApp):
         self.totalExpectedPlayers = self.PlayerCount.get()
         self.client.sendMessage('totalPlayersRequest', str(self.totalExpectedPlayers))
 
-        '''# Tell server to start game
-        self.client.sendMessage(key='startGameRequest', message='True')
-        serverKey = self.client.listen()
-        self.client.memeImage = serverKey[1]'''
 
         controller.show_frame(hostPage)  # Continue to next page (page 2)
 
@@ -222,6 +227,7 @@ class Page2(tk.Frame):
         label.place(relx=.5, rely=0.05, anchor="c")
 
         # Inserts the image and resizes it to fit the screen size
+        print('images/', self.client.memeImage)
         meme = Image.open('images/' + self.client.memeImage)
         meme = resizeImage(meme)
         meme = ImageTk.PhotoImage(meme)
@@ -373,10 +379,10 @@ class Page4(tk.Frame):
 
         button1 = ttk.Button(self, text="New Game",
                              command=lambda: controller.show_frame(StartPage))
-        button1.grid(row=players + 2, column=1, padx=10, pady=10)
+        button1.grid(row=len(self.client.packedScores) + 2, column=1, padx=10, pady=10)
 
         button2 = ttk.Button(self, text="High Scores", command=lambda: controller.show_frame(HighScorePage))
-        button2.grid(row=players + 3, column=1, padx=10, pady=10)
+        button2.grid(row=len(self.client.packedScores) + 3, column=1, padx=10, pady=10)
 
 
 class HighScorePage(tk.Frame):

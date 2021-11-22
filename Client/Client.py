@@ -38,7 +38,6 @@ class Client():
         if serverKey[0] == 'nameRequest':
             self.sendMessage('nameRequest', name)
 
-<<<<<<< HEAD
     """
 =======
         # TODO: PROMT PLAYER FOR NUNBER
@@ -55,7 +54,7 @@ class Client():
     def startGameRequest(self, serverKey: str):
         print('Start game request received')
     """
-
+    """
     # Random image sent to player. Prompt player for a text to put to the image -> image with text
     # NOT USED
     def imageTextRequest(self, serverKey: str, imageText: str):
@@ -94,6 +93,7 @@ class Client():
     def message(self, serverMessage: str):
         print(serverMessage)
         print('')
+    """
 
     # Listens for request or message from the server
     def listen(self) -> tuple:
@@ -116,6 +116,7 @@ class Client():
                 # Return key and message tuple
                 return [serverKey, serverMessage]
 
+    """
     # Prompt the player for a reply it can send to the server
     # NOT USED
     def promptReply(self, key: str, UIMessage: str):
@@ -123,6 +124,7 @@ class Client():
         message = input(UIMessage + ': ')
         # Send key and message to the server
         self.sendMessage(key, message)
+    """
 
     # Send message to the server with a matching key
     def sendMessage(self, key: str, message: str):

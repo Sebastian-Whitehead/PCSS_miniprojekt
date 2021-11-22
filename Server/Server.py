@@ -44,7 +44,7 @@ class Server(GameEngine, SendReceiveImage):
             self.connectPlayer()
 
 
-            for i in range(int(self.expectedNumberOfPlayers)-1):
+            for i in range(int(self.expectedNumberOfPlayers) - 1):
                 print(f'rep {i}')
                 self.connectPlayer()
 
