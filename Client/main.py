@@ -5,7 +5,7 @@ from Client import Client
 from edit_image import edit_image, resizeImage
 from handleHighScoreList import *
 
-LARGEFONT = ("Verdana", 35)  # Font 
+LARGEFONT = ("Verdana", 35)  # Font
 
 """ # Manufactured data (start) #
 players = 4
