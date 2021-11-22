@@ -294,7 +294,7 @@ class Page3(tk.Frame):
 
             if w > h:
                 scale = w / h
-                w = int(500)
+                w = int(400)
                 h = int(w / scale)
                 meme = meme.resize((w, h))
                 meme = ImageTk.PhotoImage(meme)
